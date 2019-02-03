@@ -1,6 +1,7 @@
 {
   "name": "bustabit-script-simulator",
   "version": "0.1.0",
+  "homepage" : "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
     "react": "^16.7.0",
@@ -21,5 +22,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "terser": "^3.14.1"
+  }
 }
