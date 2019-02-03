@@ -1,7 +1,7 @@
 {
   "name": "bustabit-script-simulator",
   "version": "0.1.0",
-  "homepage" : "http://Mtihc.github.io/bustabit-script-simulator",
+  "homepage": "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
     "react": "^16.7.0",
@@ -12,7 +12,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -24,6 +26,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "terser": "^3.14.1"
   }
 }
