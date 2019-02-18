@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/bustabit-script-simulator/precache-manifest.39d330899f3664ae1e8657a3f4a11a40.js"
+  "/bustabit-script-simulator/precache-manifest.38af896f93f7bf2bf223653c9711f622.js"
 );
 
 workbox.clientsClaim();

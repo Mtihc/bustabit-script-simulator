@@ -1,14 +1,15 @@
 {
-  "main.css": "/bustabit-script-simulator/static/css/main.983a32fe.chunk.css",
-  "main.js": "/bustabit-script-simulator/static/js/main.c8c793f4.chunk.js",
-  "main.js.map": "/bustabit-script-simulator/static/js/main.c8c793f4.chunk.js.map",
-  "static/js/1.fa92c112.chunk.js": "/bustabit-script-simulator/static/js/1.fa92c112.chunk.js",
-  "static/js/1.fa92c112.chunk.js.map": "/bustabit-script-simulator/static/js/1.fa92c112.chunk.js.map",
-  "runtime~main.js": "/bustabit-script-simulator/static/js/runtime~main.70539ca2.js",
-  "runtime~main.js.map": "/bustabit-script-simulator/static/js/runtime~main.70539ca2.js.map",
-  "static/media/logo.svg": "/bustabit-script-simulator/static/media/logo.5d5d9eef.svg",
-  "static/css/main.983a32fe.chunk.css.map": "/bustabit-script-simulator/static/css/main.983a32fe.chunk.css.map",
+  "main.css": "/bustabit-script-simulator/static/css/main.ca0cff37.chunk.css",
+  "main.js": "/bustabit-script-simulator/static/js/main.81b961b2.chunk.js",
+  "main.js.map": "/bustabit-script-simulator/static/js/main.81b961b2.chunk.js.map",
+  "runtime~main.js": "/bustabit-script-simulator/static/js/runtime~main.b7c4a79c.js",
+  "runtime~main.js.map": "/bustabit-script-simulator/static/js/runtime~main.b7c4a79c.js.map",
+  "static/css/2.db5a6c48.chunk.css": "/bustabit-script-simulator/static/css/2.db5a6c48.chunk.css",
+  "static/js/2.1e5a07c9.chunk.js": "/bustabit-script-simulator/static/js/2.1e5a07c9.chunk.js",
+  "static/js/2.1e5a07c9.chunk.js.map": "/bustabit-script-simulator/static/js/2.1e5a07c9.chunk.js.map",
   "index.html": "/bustabit-script-simulator/index.html",
-  "precache-manifest.39d330899f3664ae1e8657a3f4a11a40.js": "/bustabit-script-simulator/precache-manifest.39d330899f3664ae1e8657a3f4a11a40.js",
-  "service-worker.js": "/bustabit-script-simulator/service-worker.js"
+  "precache-manifest.38af896f93f7bf2bf223653c9711f622.js": "/bustabit-script-simulator/precache-manifest.38af896f93f7bf2bf223653c9711f622.js",
+  "service-worker.js": "/bustabit-script-simulator/service-worker.js",
+  "static/css/2.db5a6c48.chunk.css.map": "/bustabit-script-simulator/static/css/2.db5a6c48.chunk.css.map",
+  "static/css/main.ca0cff37.chunk.css.map": "/bustabit-script-simulator/static/css/main.ca0cff37.chunk.css.map"
 }
