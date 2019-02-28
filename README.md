@@ -1,4 +1,9 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Bootstrapped with create-react-app
+
+- This project was bootstrapped with [create-react-app](https://github.com/facebook/create-react-app).
+- Installed [gh-pages](https://github.com/tschaub/gh-pages) for deploying to github pages using `npm run deploy`
+- Installed [bulma](https://github.com/jgthms/bulma) for styling.
+- Installed [d3](https://github.com/d3/d3) to render a line chart.
 
 ## Available Scripts
 
@@ -66,3 +71,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+It's most likely related to this issue: https://github.com/facebook/create-react-app/issues/6334#issuecomment-459987876

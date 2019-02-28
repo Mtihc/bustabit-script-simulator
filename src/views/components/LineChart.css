@@ -1,0 +1,77 @@
+.LineChart {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  height: 500px;
+  vertical-align: top;
+}
+
+.LineChart svg {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.LineChart .data-line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+  transition: transform 0.5s;
+}
+
+.LineChart .data-point {
+  fill: steelblue;
+  stroke: white;
+  stroke-width: 2px;
+  stroke-opacity: 0.5;
+  transition: stroke 0.5s, stroke-width 0.5s, stroke-opacity 0.5s;
+}
+.LineChart .data-point.is-success {
+  fill: hsl(141, 71%, 48%);
+}
+.LineChart .data-point.is-danger {
+  fill: hsl(348, 100%, 61%);
+}
+.LineChart .data-point.hover.is-success {
+  stroke: hsl(141, 71%, 48%);
+}
+.LineChart .data-point.hover.is-danger {
+  stroke: hsl(348, 100%, 61%);
+}
+.LineChart .data-point.hover {
+  stroke-width: 12px;
+  stroke-opacity: 0.5;
+}
+
+.LineChart .crosshair-line {
+  stroke: #dbdbdb;
+  stroke-width: 1px;
+  stroke-dasharray: 4;
+}
+
+.LineChart .zoom {
+  fill: none;
+  pointer-events: all;
+}
+
+.LineChart .tooltip-container {
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
+
+.LineChart .tooltip {
+  background-color: #ffffffe8;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  box-shadow: none;
+  display: inline-block;
+  font: 12px sans-serif;
+  padding: 1.25rem;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+  transition: opacity 0.2s;
+}
