@@ -62,6 +62,12 @@ class SimulatedBustabitEngine extends EventEmitter {
     this._userInfo = {
       uname: 'Anonymous',
       balance: 0,
+      balanceATH: 0,
+      balanceATL: Number.MAX_VALUE,
+      winStreak: 0,
+      loseStreak: 0,
+      highBet: 0,
+      lowBet: Number.MAX_VALUE,
       bets: 0,
       profit: 0,
       profitATH: 0,
@@ -125,20 +131,24 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
     const results = {
       startingBalance: +startingBalance,
       balance: undefined,
+      balanceATH: undefined,
+      balanceATL: undefined,
       bets: 0,
       profit: 0,
+      lowBet: 0,
+      highBet: 0,
+      loseStreak: 0,
+      winStreak: 0,
       profitATH: undefined,
       profitATL: undefined,
       message: '',
       history: engine.history.data,
-      log: logMessages
+      log: logMessages,
+      duration: undefined,
+      profitPerHour: undefined
     };
     if (drawChart) {
-      Object.assign(results, {
-        chartData: [],
-        duration: undefined,
-        profitPerHour: undefined
-      })
+      Object.assign(results, { chartData: [] })
     }
 
     const context = { config, engine, userInfo, log, stop, gameResultFromHash };
@@ -168,8 +178,14 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       results.balance = userInfo.balance
       results.bets = userInfo.bets
       results.profit = userInfo.profit
+      results.lowBet = userInfo.lowBet
+      results.highBet = userInfo.highBet
+      results.loseStreak = userInfo.loseStreak
+      results.winStreak = userInfo.winStreak
       results.profitATH = userInfo.profitATH
       results.profitATL = userInfo.profitATL
+      results.balanceATH = userInfo.balanceATH
+      results.balanceATL = userInfo.balanceATL
       results.message = `${userInfo.bets} Games played. ${results.profit > 0 ? 'Won' : 'Lost'} ${(results.profit/100)} bits. ${results.message || ''}`
       results.history = engine.history.results
       results.log = logMessages
@@ -188,9 +204,9 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       game.cashedAt = 0
 
       // set gameState, just like bustabit
-      engine.gameState = 'GAME_STARTING';
+      engine.gameState = 'GAME_STARTING'
       // emit event, just like bustabit
-      engine.emit('GAME_STARTING', { gameId: id });
+      engine.emit('GAME_STARTING', { gameId: id })
 
       // engine.next is set when engine.bet(wager, payout) is called
       // probably just like bustabit
@@ -201,19 +217,19 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         // reject with specific strings, just like bustabit
         if (isNaN(bet.wager) || bet.wager < 100) {
           bet.reject('INVALID_BET')
-          return endSimulation();
+          return endSimulation()
         }
         if (isNaN(bet.payout)) {
           bet.reject('cannot parse JSON')
-          return endSimulation();
+          return endSimulation()
         }
         if (userInfo.balance - bet.wager < 0) {
           bet.reject('BET_TOO_BIG')
-          return endSimulation();
+          return endSimulation()
         }
         if (bet.payout <= 1) {
           bet.reject('payout is too low')
-          return endSimulation();
+          return endSimulation()
         }
 
         // decrease balance, just like bustabit
@@ -236,7 +252,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       engine.emit('GAME_STARTED', null)
 
       // set gameState, just like bustabit
-      engine.gameState = 'GAME_IN_PROGRESS';
+      engine.gameState = 'GAME_IN_PROGRESS'
 
       // set wager and cashedAt, just like bustabit
       // wager: zero when didn't bet
@@ -247,17 +263,22 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       if (game.wager !== 0) {
         // update balance, just like bustabit
         userInfo.balance += game.cashedAt * game.wager
+        if (userInfo.balance < userInfo.balanceATL) { userInfo.balanceATL = userInfo.balance }
+        if (userInfo.balance > userInfo.balanceATH) { userInfo.balanceATH = userInfo.balance }
         userInfo.profit = userInfo.balance - startingBalance
-        if (userInfo.profit < userInfo.profitATL) {
-          userInfo.profitATL = userInfo.profit
-        }
-        if (userInfo.profit > userInfo.profitATH) {
-          userInfo.profitATH = userInfo.profit
-        }
+        if (game.wager < userInfo.lowBet) { userInfo.lowBet = game.wager }
+        if (game.wager > userInfo.highBet) { userInfo.highBet = game.wager }
+        if (userInfo.profit < userInfo.profitATL) { userInfo.profitATL = userInfo.profit }
+        if (userInfo.profit > userInfo.profitATH) { userInfo.profitATH = userInfo.profit }
       }
 
       if (game.cashedAt > 0) {
         // won!
+        userInfo.sinceWin = 0
+        userInfo.sinceLose++
+        if (userInfo.sinceLose > userInfo.winStreak) {
+            userInfo.winStreak = userInfo.sinceLose
+        }
 
         // emit event, just like bustabit
         engine.emit('CASHED_OUT', {
@@ -265,6 +286,15 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
           cashedAt: game.cashedAt,
           wager: game.wager
         })
+      } else {
+        if(game.wager !== 0){
+          // lost
+          userInfo.sinceLose = 0
+          userInfo.sinceWin++
+          if (userInfo.sinceWin > userInfo.loseStreak) {
+            userInfo.loseStreak = userInfo.sinceWin
+          }
+        }
       }
 
       // add game to history, just like bustabit

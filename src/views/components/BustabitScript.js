@@ -280,7 +280,7 @@ class Show extends Component {
                 <textarea className="textarea"
                           value={scripts.results ? scripts.results.log : undefined}
                           readOnly={true}
-                          style={{width: '100%', height: '200px'}}
+                          style={{width: '100%', height: '200px', resize: 'both'}}
                           placeholder="Script logs will appear here">
                 </textarea>
               </div>
@@ -308,12 +308,28 @@ class Show extends Component {
                         <td>{scripts.results.bets}</td>
                       </tr>
                       <tr>
-                        <th>Duration</th>
-                        <td>{msToTime(scripts.results.duration)}</td>
+                      <th>Duration</th>
+                      <td>{msToTime(scripts.results.duration)}</td>
                       </tr>
                       <tr>
-                        <th>Starting Balance</th>
-                        <td>{+scripts.results.startingBalance/100}</td>
+                      <th>Start Balance</th>
+                      <td>{scripts.results.startingBalance/100}</td>
+                      </tr>
+                      <tr>
+                      <th>Win Streak</th>
+                      <td>{scripts.results.winStreak}</td>
+                      </tr>
+                      <tr>
+                      <th>Lose Streak</th>
+                      <td>{scripts.results.loseStreak}</td>
+                      </tr>
+                      <tr>
+                      <th>Smallest Bet</th>
+                      <td>{scripts.results.lowBet/100}</td>
+                      </tr>
+                      <tr>
+                      <th>Largest Bet</th>
+                      <td>{scripts.results.highBet/100}</td>
                       </tr>
                       <tr>
                         <th>Profit ATL</th>
@@ -324,8 +340,20 @@ class Show extends Component {
                         <td>{Math.round(scripts.results.profitATH)/100}</td>
                       </tr>
                       <tr>
-                        <th>Profit</th>
+                      <th>Balance ATL</th>
+                      <td>{scripts.results.balanceATL/100}</td>
+                      </tr>
+                      <tr>
+                      <th>Balance ATH</th>
+                      <td>{scripts.results.balanceATH/100}</td>
+                      </tr>
+                      <tr>
+                        <th>End Profit</th>
                         <td className={`${scripts.results.profit >= 0 ? 'has-text-success' : 'has-text-danger'}`}>{Math.round(scripts.results.profit)/100}</td>
+                      </tr>
+                      <tr>
+                        <th>End Balance</th>
+                        <td>{scripts.results.balance/100}</td>
                       </tr>
                       {scripts.results.profit > 0 && (
                         <tr>
@@ -333,10 +361,6 @@ class Show extends Component {
                           <td>{Math.round(scripts.results.profitPerHour)/100}</td>
                         </tr>
                       )}
-                      <tr>
-                        <th>Balance</th>
-                        <td>{scripts.results.balance/100}</td>
-                      </tr>
                       <tr>
                         <td colSpan="2">{scripts.results.message || ''}</td>
                       </tr>
