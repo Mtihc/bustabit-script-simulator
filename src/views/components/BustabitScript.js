@@ -316,7 +316,7 @@ class Show extends Component {
                     <tbody>
                       <tr>
                         <th>Games Played</th>
-                        <td>{scripts.results.bets}</td>
+                        <td>{scripts.results.bets} games</td>
                       </tr>
                       <tr>
                       <th>Duration</th>
@@ -324,56 +324,56 @@ class Show extends Component {
                       </tr>
                       <tr>
                       <th>Start Balance</th>
-                      <td>{scripts.results.startingBalance/100}</td>
+                      <td>{scripts.results.startingBalance/100} bits</td>
                       </tr>
                       <tr>
                       <th>Smallest Bet</th>
-                      <td>{scripts.results.lowBet/100}</td>
+                      <td>{scripts.results.lowBet/100} bits</td>
                       </tr>
                       <tr>
                       <th>Largest Bet</th>
-                      <td>{scripts.results.highBet/100}</td>
+                      <td>{scripts.results.highBet/100} bits</td>
                       </tr>
                       <tr>
                       <th>Win Streak</th>
-                      <td>{scripts.results.winStreak}</td>
+                      <td>{scripts.results.winStreak} games</td>
                       </tr>
                       <tr>
                       <th>Lose Streak</th>
-                      <td>{scripts.results.loseStreak}</td>
+                      <td>{scripts.results.loseStreak} games</td>
                       </tr>
                       <tr>
                       <th>Streak Cost</th>
-                      <td>{scripts.results.streakSum}</td>
+                      <td>{scripts.results.streakSum/100} bits</td>
                       </tr>
                       <tr>
                         <th>Profit ATL</th>
-                        <td>{Math.round(scripts.results.profitATL)/100}</td>
+                        <td>{(scripts.results.profitATL/100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>Profit ATH</th>
-                        <td>{Math.round(scripts.results.profitATH)/100}</td>
+                        <td>{(scripts.results.profitATH/100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                       <th>Balance ATL</th>
-                      <td>{scripts.results.balanceATL/100}</td>
+                      <td>{(scripts.results.balanceATL/100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                       <th>Balance ATH</th>
-                      <td>{scripts.results.balanceATH/100}</td>
+                      <td>{(scripts.results.balanceATH/100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>End Profit</th>
-                        <td className={`${scripts.results.profit >= 0 ? 'has-text-success' : 'has-text-danger'}`}>{Math.round(scripts.results.profit)/100}</td>
+                        <td className={`${scripts.results.profit >= 0 ? 'has-text-success' : 'has-text-danger'}`}>{(Math.round(scripts.results.profit)/100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>End Balance</th>
-                        <td>{scripts.results.balance/100}</td>
+                        <td>{scripts.results.balance/100} bits</td>
                       </tr>
                       {scripts.results.profit > 0 && (
                         <tr>
                           <th>Profit per hour</th>
-                          <td>{Math.round(scripts.results.profitPerHour)/100}</td>
+                          <td>{Math.round(scripts.results.profitPerHour)/100} bits</td>
                         </tr>
                       )}
                       <tr>

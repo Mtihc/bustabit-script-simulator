@@ -142,21 +142,23 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         return new Promise(resolve => resolve(hashToBust(hash)));
       };
       userInfo.balance = startingBalance
+      userInfo.balanceATH = startingBalance
+      userInfo.balanceATL = startingBalance
 
     const results = {
-      startingBalance: +startingBalance,
-      balance: undefined,
-      balanceATH: undefined,
-      balanceATL: undefined,
+      startingBalance: startingBalance,
+      balance: startingBalance,
+      balanceATH: startingBalance,
+      balanceATL: startingBalance,
       bets: 0,
       profit: 0,
       lowBet: 0,
       highBet: 0,
       winStreak: 0,
       loseStreak: 0,
-      streakSum: undefined,
-      profitATH: undefined,
-      profitATL: undefined,
+      streakSum: 0,
+      profitATH: 0,
+      profitATL: 0,
       message: '',
       history: engine.history.data,
       log: logMessages,
@@ -305,7 +307,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
             userInfo.winStreak = userInfo.sinceLose
         }
         if (userInfo.streakSum < userInfo.sumWagers){
-            userInfo.streakSum = userInfo.sumWagers;
+            userInfo.streakSum = userInfo.sumWagers
         }
         userInfo.sumWagers = 0;
         // emit event, just like bustabit
