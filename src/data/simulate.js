@@ -63,11 +63,13 @@ class SimulatedBustabitEngine extends EventEmitter {
       uname: 'Anonymous',
       balance: 0,
       balanceATH: 0,
-      balanceATL: Number.MAX_VALUE,
+      balanceATL: 0,
       winStreak: 0,
       loseStreak: 0,
+      streakSum: 0,
+      sumWagers: 0,
       highBet: 0,
-      lowBet: Number.MAX_VALUE,
+      lowBet: 0,
       bets: 0,
       profit: 0,
       profitATH: 0,
@@ -104,29 +106,42 @@ function evalScript () {
   eval(arguments[0])
 }
 
-function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawChart }) {
+function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawChart, quickTest }) {
   return new Promise((resolve, reject) => {
     let logMessages = '',
         shouldStop = false,
         shouldStopReason = undefined;
-
+    const logFuncs = {
+        log: console.log,
+        warn: console.warn,
+        info: console.info,
+        error: console.error,
+        debug: console.debug
+    };
+    function noLog() { return; }
+    if (!quickTest) {
+        console.log = noLog;
+        console.warn = noLog;
+        console.info = noLog;
+        console.error = noLog;
+        console.debug = noLog;
+    }
     const engine = new SimulatedBustabitEngine(),
-          userInfo = engine._userInfo,
-          log = function () {
-            let msg = Array.prototype.slice.call(arguments);
-            logMessages += msg.join(' ') + '\n'
-            msg.unshift('LOG:')
-            console.log(...msg)
-          },
-          stop = function (reason) {
-            shouldStopReason = reason
-            shouldStop = true
-          },
-          gameResultFromHash = function (hash) {
-            return new Promise(resolve => resolve(hashToBust(hash)));
-          };
-
-    userInfo.balance = startingBalance
+      userInfo = engine._userInfo,
+      log = (!quickTest ? ()=>{} : function() {
+          let msg = Array.prototype.slice.call(arguments);
+          logMessages += msg.join(' ') + '\n'
+          msg.unshift('LOG:');
+          console.log(...msg);
+      }),
+      stop = function(reason) {
+        shouldStopReason = reason
+        shouldStop = true
+      },
+      gameResultFromHash = function(hash) {
+        return new Promise(resolve => resolve(hashToBust(hash)));
+      };
+      userInfo.balance = startingBalance
 
     const results = {
       startingBalance: +startingBalance,
@@ -137,8 +152,9 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       profit: 0,
       lowBet: 0,
       highBet: 0,
-      loseStreak: 0,
       winStreak: 0,
+      loseStreak: 0,
+      streakSum: undefined,
       profitATH: undefined,
       profitATL: undefined,
       message: '',
@@ -170,6 +186,13 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
 
 
     function endSimulation () {
+      if (!!quickTest){
+          console.log = logFuncs.log;
+          console.warn = logFuncs.warn;
+          console.info = logFuncs.info;
+          console.error = logFuncs.error;
+          console.debug = logFuncs.debug;
+      }
       if (shouldStop && shouldStopReason) {
         log (shouldStopReason)
       }
@@ -180,6 +203,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       results.profit = userInfo.profit
       results.lowBet = userInfo.lowBet
       results.highBet = userInfo.highBet
+      results.streakSum = userInfo.streakSum
       results.loseStreak = userInfo.loseStreak
       results.winStreak = userInfo.winStreak
       results.profitATH = userInfo.profitATH
@@ -215,7 +239,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
 
       if (bet) {
         // reject with specific strings, just like bustabit
-        if (isNaN(bet.wager) || bet.wager < 100) {
+        if (isNaN(bet.wager) || bet.wager < 100 || (bet.wager % 100 !== 0)) {
           bet.reject('INVALID_BET')
           return endSimulation()
         }
@@ -235,11 +259,12 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         // decrease balance, just like bustabit
 
         if (bet.wager > 0) {
-          userInfo.balance -= bet.wager
-          userInfo.bets++
+          userInfo.balance -= bet.wager;
+          userInfo.bets++;
+          userInfo.sumWagers += bet.wager;
         }
         // resolve with null, just like bustabit
-        bet.resolve(null)
+        bet.resolve(null);
 
         // emit event, just like bustabit
         engine.emit('BET_PLACED', {
@@ -266,8 +291,8 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         if (userInfo.balance < userInfo.balanceATL) { userInfo.balanceATL = userInfo.balance }
         if (userInfo.balance > userInfo.balanceATH) { userInfo.balanceATH = userInfo.balance }
         userInfo.profit = userInfo.balance - startingBalance
-        if (game.wager < userInfo.lowBet) { userInfo.lowBet = game.wager }
-        if (game.wager > userInfo.highBet) { userInfo.highBet = game.wager }
+        if (!userInfo.lowBet || game.wager < userInfo.lowBet) { userInfo.lowBet = game.wager }
+        if (!userInfo.highBet || game.wager > userInfo.highBet) { userInfo.highBet = game.wager }
         if (userInfo.profit < userInfo.profitATL) { userInfo.profitATL = userInfo.profit }
         if (userInfo.profit > userInfo.profitATH) { userInfo.profitATH = userInfo.profit }
       }
@@ -279,7 +304,10 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         if (userInfo.sinceLose > userInfo.winStreak) {
             userInfo.winStreak = userInfo.sinceLose
         }
-
+        if (userInfo.streakSum < userInfo.sumWagers){
+            userInfo.streakSum = userInfo.sumWagers;
+        }
+        userInfo.sumWagers = 0;
         // emit event, just like bustabit
         engine.emit('CASHED_OUT', {
           uname: userInfo.uname,

@@ -74,11 +74,6 @@ class Title extends Component {
             Script Simulator
           </span>
         </p>
-        <p>
-          <span className="script-simulator-author">
-            by <a href="https://github.com/Mtihc">Mtihc</a>
-          </span>
-        </p>
       </div>
     )
   }
@@ -167,6 +162,7 @@ class Show extends Component {
       gameHash: '7edbd07968e771f205a4e2b67701c2f6993437db0c557160ba79ee70ea6d10c6',
       gameAmount: 1000,
       drawChart: true,
+      quickTest: true,
     }
   }
 
@@ -256,13 +252,15 @@ class Show extends Component {
                               gameAmount: this.state.gameAmount,
                               startingBalance: this.state.startingBalance,
                               drawChart: this.state.drawChart,
+                              quickTest: this.state.quickTest,
                             };
-                            scripts.onRunScript(args)
+                            scripts.onRun(args)
                           }}>
                     Run Script
                   </button>
                 </div>
                 <div className="control">
+                <p>
                   <label className="checkbox">
                     <input className="checkbox"
                            type="checkbox"
@@ -272,8 +270,21 @@ class Show extends Component {
                             this.setState({[event.target.name]: Boolean(event.target.checked)})
                           }}/>
                     &nbsp;
-                    Draw Chart
+                    Enable Chart
                   </label>
+                  </p><p>
+                  <label className="checkbox">
+                    <input className="checkbox"
+                           type="checkbox"
+                           name="quickTest"
+                           checked={this.state.quickTest}
+                           onChange={(event) => {
+                            this.setState({[event.target.name]: Boolean(event.target.checked)})
+                          }}/>
+                    &nbsp;
+                    Enable Log
+                  </label>
+                 </p>
                 </div>
               </div>
               <div>
@@ -316,6 +327,14 @@ class Show extends Component {
                       <td>{scripts.results.startingBalance/100}</td>
                       </tr>
                       <tr>
+                      <th>Smallest Bet</th>
+                      <td>{scripts.results.lowBet/100}</td>
+                      </tr>
+                      <tr>
+                      <th>Largest Bet</th>
+                      <td>{scripts.results.highBet/100}</td>
+                      </tr>
+                      <tr>
                       <th>Win Streak</th>
                       <td>{scripts.results.winStreak}</td>
                       </tr>
@@ -324,12 +343,8 @@ class Show extends Component {
                       <td>{scripts.results.loseStreak}</td>
                       </tr>
                       <tr>
-                      <th>Smallest Bet</th>
-                      <td>{scripts.results.lowBet/100}</td>
-                      </tr>
-                      <tr>
-                      <th>Largest Bet</th>
-                      <td>{scripts.results.highBet/100}</td>
+                      <th>Streak Cost</th>
+                      <td>{scripts.results.streakSum}</td>
                       </tr>
                       <tr>
                         <th>Profit ATL</th>

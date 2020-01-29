@@ -8,10 +8,11 @@ import CryptoJS from "crypto-js"
 
 function getLocalStorageScripts () {
   try {
-    return JSON.parse(localStorage.getItem('scripts'))
+    var loadedScripts = JSON.parse(localStorage.getItem('scripts'))
   } catch (e) {
-    return null
+    loadedScripts = null;
   }
+  return loadedScripts;
 }
 
 function setLocalStorageScripts (scripts) {
@@ -46,7 +47,7 @@ function assignConfigValues(config, values) {
     if (config[key].type === 'radio') {
       config[key].options = assignConfigValues(config[key].options || {}, values[key].options)
     }
-  } 
+  }
   return config
 }
 
@@ -58,7 +59,7 @@ function assignConfigValues(config, values) {
  * @returns {Array} The config and the remaining script text.
  */
 function splitConfigFromScriptText (script) {
-  const regexp = /^\s?(var config = {(?:.|\s)*?^};?)((?:.|\s)*)$/gm
+  const regexp = /^\s*(var\s+config\s*=\s*{(?:.+|\s*)?};?)((?:.+|\s*)?)$/gm
   const match = regexp.exec(String(script.text).trim())
 
   if (match === null) {
@@ -153,8 +154,9 @@ const ScriptUtils = {
    * @param {number} options.gameAmount The amount of games to simulate
    * @param {number} options.startingBalance The amount of Bits to start with.
    * @param {boolean} options.drawChart Whether to collect extra data that is required for a line chart.
+   * @param {boolean} options.quickTest Disables the script logging in order to speed up large tests.
    */
-  runScript ({ script, gameHash, gameAmount, startingBalance, drawChart }) {
+  run ({ script, gameHash, gameAmount, startingBalance, drawChart, quickTest }) {
     let settings = { ...arguments[0] }
     delete settings.script
     settings.config = script.config
@@ -165,7 +167,7 @@ const ScriptUtils = {
         setTimeout(function () {
           simulate(settings)
             .then((results) => {
-              callback(results)
+              callback(results);
             })
             .catch(error => {
               console.error(error)
