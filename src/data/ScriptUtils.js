@@ -1,7 +1,6 @@
 import ScriptConstants from './ScriptConstants'
 import simulate from './simulate'
 import CryptoJS from "crypto-js"
-
 /*
  Helper functions
 */
@@ -59,7 +58,7 @@ function assignConfigValues(config, values) {
  * @returns {Array} The config and the remaining script text.
  */
 function splitConfigFromScriptText (script) {
-  const regexp = /^\s*(var\s+config\s*=\s*{(?:.+|\s*)?};?)((?:.+|\s*)?)$/gm
+  const regexp = /^\s*(var config = {(?:.|\s)*?^};?)((?:.|\s)*)$/gm
   const match = regexp.exec(String(script.text).trim())
 
   if (match === null) {
