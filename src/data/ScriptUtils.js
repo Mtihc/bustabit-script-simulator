@@ -5,7 +5,7 @@ import CryptoJS from "crypto-js"
  Helper functions
 */
 
-function getLocalStorageScripts () {
+function getLocalStorageScripts() {
   try {
     var loadedScripts = JSON.parse(localStorage.getItem('scripts'))
   } catch (e) {
@@ -14,17 +14,17 @@ function getLocalStorageScripts () {
   return loadedScripts;
 }
 
-function setLocalStorageScripts (scripts) {
+function setLocalStorageScripts(scripts) {
   if (scripts === undefined ||
-      scripts === null ||
-      (scripts.constructor === Object && Object.keys(scripts).length === 0)) {
+    scripts === null ||
+    (scripts.constructor === Object && Object.keys(scripts).length === 0)) {
     localStorage.removeItem('scripts')
   } else {
     localStorage.setItem('scripts', JSON.stringify(scripts))
   }
 }
 
-function onBeforeSave (script) {
+function onBeforeSave(script) {
   let oldConfig = script.config;
   script.config = getConfigFromScriptText(script)
   assignConfigValues(script.config, oldConfig)
@@ -57,26 +57,27 @@ function assignConfigValues(config, values) {
  * @param {string} script.text The script's actual raw text
  * @returns {Array} The config and the remaining script text.
  */
-function splitConfigFromScriptText (script) {
+function splitConfigFromScriptText(script) {
   const regexp = /^\s*(var config = {(?:.|\s)*?^};?)((?:.|\s)*)$/gm
   const match = regexp.exec(String(script.text).trim())
 
   if (match === null) {
     throw new TypeError('The script should begin with: \r\nvar config = {\r\n  ...\r\n}\r\n')
   }
+  // eslint-disable-next-line
   const config = eval(match[1] + '\r\nconfig;')
   return [config, match[2]]
 }
 
-function getConfigFromScriptText (script) {
+function getConfigFromScriptText(script) {
   return splitConfigFromScriptText(script)[0]
 }
 
-function getScriptTextWithoutConfig (script) {
+function getScriptTextWithoutConfig(script) {
   return splitConfigFromScriptText(script)[1]
 }
 
-function getUniqueID (existingIds) {
+function getUniqueID(existingIds) {
   for (let attempt = 0; attempt < 3; attempt++) {
     let id = String(CryptoJS.lib.WordArray.random(16))
     if (!existingIds || existingIds.indexOf(id) === -1) {
@@ -91,7 +92,7 @@ const ScriptUtils = {
    * Will insert sample scripts if there are no scripts yet.
    * @returns {Object.<string, Object>} all scripts
    */
-  load () {
+  load() {
     let scripts = getLocalStorageScripts()
     if (scripts === null || scripts === undefined) {
       scripts = ScriptUtils.restoreSamples()
@@ -103,7 +104,7 @@ const ScriptUtils = {
    * Insert or re-insert sample scripts into localStorage.
    * @returns {Object.<string, Object>} all scripts
    */
-  restoreSamples () {
+  restoreSamples() {
     let scripts = getLocalStorageScripts() || {}
     Object.keys(scripts).forEach(id => {
       if (scripts[id].isSample) {
@@ -125,7 +126,7 @@ const ScriptUtils = {
    * Save a script.
    * @param {Object.<string, Object>} script The script to save
    */
-  save (script) {
+  save(script) {
     let scripts = getLocalStorageScripts()
     onBeforeSave(script)
     if (!script.id) {
@@ -139,7 +140,7 @@ const ScriptUtils = {
    * Delete a script.
    * @param {string} id The id of script to delete
    */
-  delete (id) {
+  delete(id) {
     let scripts = getLocalStorageScripts()
     delete scripts[id]
     setLocalStorageScripts(scripts)
@@ -155,7 +156,7 @@ const ScriptUtils = {
    * @param {boolean} options.drawChart Whether to collect extra data that is required for a line chart.
    * @param {boolean} options.quickTest Disables the script logging in order to speed up large tests.
    */
-  run ({ script, gameHash, gameAmount, startingBalance, drawChart, quickTest }) {
+  run({ script, gameHash, gameAmount, startingBalance, drawChart, quickTest }) {
     let settings = { ...arguments[0] }
     delete settings.script
     settings.config = script.config

@@ -19,45 +19,53 @@ function hashToBusts(seed, amount) {
   }
   let prevHash = seed
   const result = []
-  result.unshift({hash: prevHash, bust: hashToBust(String(prevHash))})
+  result.unshift({ hash: prevHash, bust: hashToBust(String(prevHash)) })
   for (let index = 0; index < amount; index++) {
     let hash = String(CryptoJS.SHA256(String(prevHash)))
     let bust = hashToBust(hash)
-    result.unshift({hash, bust})
+    result.unshift({ hash, bust })
     prevHash = hash;
   }
   return result
 }
 
 class SimulatedBustabitHistory {
-  constructor () {
+  constructor() {
     this.data = []
   }
 
-  get size () {
+  get size() {
     return this.data.length
   }
 
-  get length () {
+  get length() {
     return this.data.length
   }
 
-  get start () {
+  get start() {
     return 0
   }
 
-  get end () {
+  get end() {
     return this.data.length - 1
   }
 
-  first () {
-    return this.data[0]
+  first() {
+    return this.size > 0 ? this.data[0] : null;
+  }
+
+  last() {
+    return this.size > 0 ? this.data[this.size - 1] : null;
+  }
+
+  toArray() {
+    return this.data;
   }
 }
 
 class SimulatedBustabitEngine extends EventEmitter {
 
-  constructor () {
+  constructor() {
     super()
     this._userInfo = {
       uname: 'Anonymous',
@@ -73,79 +81,83 @@ class SimulatedBustabitEngine extends EventEmitter {
       bets: 0,
       profit: 0,
       profitATH: 0,
-      profitATL: 0
+      profitATL: 0,
+      profitPerHour: 0,
+      duration: 0
     }
     this.history = new SimulatedBustabitHistory()
     this.bet = this.bet.bind(this)
   }
 
-  getCurrentBet () {
+  getCurrentBet() {
     if (!this.next) return undefined;
     return { wager: this.next.wager, payout: this.next.payout }
   }
 
-  isBetQueued () {
+  isBetQueued() {
     return !!this.next
   }
 
-  cancelQueuedBet () {
+  cancelQueuedBet() {
     this.next = undefined
   }
 
   bet(wager, payout) {
     // 'bet' returns a Promise, just like on bustabit
     return new Promise((resolve, reject) => {
-      this.next = { wager, payout: Math.round(payout * 100)/100, isAuto: true, resolve, reject }
-    })
+      this.next = { wager, payout: Math.round(payout * 100) / 100, isAuto: true, resolve, reject }
+    }).catch(error => console.error(error));
   }
 
 }
 
-function evalScript () {
+function evalScript() {
   const { config, engine, userInfo, log, stop, gameResultFromHash } = this // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line
   eval(arguments[0])
 }
 
-function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawChart, quickTest }) {
+function simulate({ text, config, startingBalance, gameHash, gameAmount, drawChart, quickTest }) {
   return new Promise((resolve, reject) => {
     let logMessages = '',
-        shouldStop = false,
-        shouldStopReason = undefined;
+      shouldStop = false,
+      shouldStopReason = undefined;
     const logFuncs = {
-        log: console.log,
-        warn: console.warn,
-        info: console.info,
-        error: console.error,
-        debug: console.debug
+      log: console.log,
+      warn: console.warn,
+      info: console.info,
+      error: console.error,
+      debug: console.debug
     };
     function noLog() { return; }
     if (!quickTest) {
-        console.log = noLog;
-        console.warn = noLog;
-        console.info = noLog;
-        console.error = noLog;
-        console.debug = noLog;
+      console.log = noLog;
+      console.warn = noLog;
+      console.info = noLog;
+      console.error = noLog;
+      console.debug = noLog;
     }
     const engine = new SimulatedBustabitEngine(),
       userInfo = engine._userInfo,
-      log = (!quickTest ? ()=>{} : function() {
-          let msg = Array.prototype.slice.call(arguments);
-          logMessages += msg.join(' ') + '\n'
-          msg.unshift('LOG:');
-          console.log(...msg);
+      log = (!quickTest ? () => { } : function () {
+        let msg = Array.prototype.slice.call(arguments);
+        logMessages += msg.join(' ') + '\n'
+        msg.unshift('LOG:');
+        console.log(...msg);
       }),
-      stop = function(reason) {
+      stop = function (reason) {
         shouldStopReason = reason
         shouldStop = true
       },
-      gameResultFromHash = function(hash) {
+      gameResultFromHash = function (hash) {
         return new Promise(resolve => resolve(hashToBust(hash)));
       };
-      userInfo.balance = startingBalance
-      userInfo.balanceATH = startingBalance
-      userInfo.balanceATL = startingBalance
+    userInfo.balance = startingBalance
+    userInfo.balanceATH = startingBalance
+    userInfo.balanceATL = startingBalance
 
     const results = {
+      duration: 0,
       startingBalance: startingBalance,
       balance: startingBalance,
       balanceATH: startingBalance,
@@ -157,13 +169,12 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       winStreak: 0,
       loseStreak: 0,
       streakSum: 0,
+      profitPerHour: 0,
       profitATH: 0,
       profitATL: 0,
       message: '',
       history: engine.history.data,
-      log: logMessages,
-      duration: undefined,
-      profitPerHour: undefined
+      log: logMessages
     };
     if (drawChart) {
       Object.assign(results, { chartData: [] })
@@ -175,30 +186,35 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
     const games = hashToBusts(gameHash, gameAmount)
     nextGame(null, -1, games)
 
-    function nextGame (id) {
+    function nextGame(id) {
       id++
       setImmediate(() => {
         if (id < games.length && !shouldStop) {
-          doGame(id)
+          doGame(id);
         } else {
-          endSimulation()
+          endSimulation();
         }
-      })
+      });
     }
 
 
-    function endSimulation () {
-      if (!!quickTest){
-          console.log = logFuncs.log;
-          console.warn = logFuncs.warn;
-          console.info = logFuncs.info;
-          console.error = logFuncs.error;
-          console.debug = logFuncs.debug;
+    function endSimulation() {
+      if (!!quickTest) {
+        console.log = logFuncs.log;
+        console.warn = logFuncs.warn;
+        console.info = logFuncs.info;
+        console.error = logFuncs.error;
+        console.debug = logFuncs.debug;
       }
       if (shouldStop && shouldStopReason) {
-        log (shouldStopReason)
+        log(shouldStopReason)
       }
 
+      if (userInfo.streakSum < userInfo.sumWagers) {
+        userInfo.streakSum = userInfo.sumWagers
+      }
+
+      results.duration = userInfo.duration;
       results.startingBalance = startingBalance
       results.balance = userInfo.balance
       results.bets = userInfo.bets
@@ -212,13 +228,10 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
       results.profitATL = userInfo.profitATL
       results.balanceATH = userInfo.balanceATH
       results.balanceATL = userInfo.balanceATL
-      results.message = `${userInfo.bets} Games played. ${results.profit > 0 ? 'Won' : 'Lost'} ${(results.profit/100)} bits. ${results.message || ''}`
+      results.profitPerHour = results.profit / (results.duration / (1000 * 60 * 60))
+      results.message = `${userInfo.bets} Games played. ${results.profit > 0 ? 'Won' : 'Lost'} ${(results.profit / 100)} bits. ${results.message || ''}`
       results.history = engine.history.results
       results.log = logMessages
-      if (drawChart) {
-        results.duration = results.chartData.reduce((a, b) => +a + +b.duration, 0)
-        results.profitPerHour = results.profit / (results.duration / (1000 * 60 * 60))
-      }
       resolve(results);
     }
 
@@ -251,6 +264,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         }
         if (userInfo.balance - bet.wager < 0) {
           bet.reject('BET_TOO_BIG')
+          userInfo.sumWagers += bet.wager;
           return endSimulation()
         }
         if (bet.payout <= 1) {
@@ -304,10 +318,10 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         userInfo.sinceWin = 0
         userInfo.sinceLose++
         if (userInfo.sinceLose > userInfo.winStreak) {
-            userInfo.winStreak = userInfo.sinceLose
+          userInfo.winStreak = userInfo.sinceLose
         }
-        if (userInfo.streakSum < userInfo.sumWagers){
-            userInfo.streakSum = userInfo.sumWagers
+        if (userInfo.streakSum < userInfo.sumWagers) {
+          userInfo.streakSum = userInfo.sumWagers
         }
         userInfo.sumWagers = 0;
         // emit event, just like bustabit
@@ -317,7 +331,7 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
           wager: game.wager
         })
       } else {
-        if(game.wager !== 0){
+        if (game.wager !== 0) {
           // lost
           userInfo.sinceLose = 0
           userInfo.sinceWin++
@@ -334,10 +348,10 @@ function simulate ({ text, config, startingBalance, gameHash, gameAmount, drawCh
         results.chartData.unshift(Object.assign({
           payout: (bet ? bet.payout : 0),
           balance: userInfo.balance,
-          profit: (game.cashedAt > 0 ? (game.cashedAt - 1) * game.wager : -game.wager),
-          duration: Math.log(game.bust)/0.00006
+          profit: (game.cashedAt > 0 ? (game.cashedAt - 1) * game.wager : -game.wager)
         }, game))
       }
+      userInfo.duration += Math.log(game.bust) / 0.00006
 
       // set gameState, just like bustabit
       engine.gameState = 'GAME_ENDED'

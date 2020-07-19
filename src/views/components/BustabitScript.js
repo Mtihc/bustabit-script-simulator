@@ -6,7 +6,7 @@ import './BustabitScript.css'
 
 class App extends Component {
 
-  viewState () {
+  viewState() {
     if (this.props.scripts.editing) {
       return 'edit'
     }
@@ -22,36 +22,36 @@ class App extends Component {
     return 'list'
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.scripts.load()
   }
 
-  render () {
+  render() {
     const viewState = this.viewState()
-    const { scripts, className = '', ...rest} = this.props
+    const { scripts, className = '', ...rest } = this.props
     return (
       <div {...rest} className={className}>
         {(viewState === 'list' || viewState === 'delete') && (
           <List
-            scripts={scripts}/>
+            scripts={scripts} />
         )}
         {viewState === 'edit' && (
           <Edit
             script={scripts.editing}
             error={scripts.updateError}
             onCancel={scripts.onCancel}
-            onSave={scripts.onSave}/>
+            onSave={scripts.onSave} />
         )}
         {viewState === 'new' && (
           <New
             script={scripts.creating}
             error={scripts.createError}
             onCancel={scripts.onCancel}
-            onSave={scripts.onSave}/>
+            onSave={scripts.onSave} />
         )}
         {viewState === 'show' && (
           <Show
-            scripts={scripts}/>
+            scripts={scripts} />
         )}
       </div>
     )
@@ -59,12 +59,12 @@ class App extends Component {
 }
 
 class Title extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <div {...rest} className={`${className}`}>
         <p>
-          <span className="bustabit-logo"/>
+          <span className="bustabit-logo" />
           <span className="bustabit-title">
             Bustabit
           </span>
@@ -80,8 +80,8 @@ class Title extends Component {
 }
 
 class List extends Component {
-  render () {
-    const { className = '', scripts, ...rest} = this.props
+  render() {
+    const { className = '', scripts, ...rest } = this.props
     let deletingId = scripts.deleting ? scripts.deleting.id : undefined
     return (
       <div {...rest} className={`BustabitScript-List box is-inline-block ${className}`}>
@@ -95,7 +95,7 @@ class List extends Component {
               </th>
               <th colSpan="2">
                 <NewButton
-                  onClick={() => scripts.onNew()}/>
+                  onClick={() => scripts.onNew()} />
               </th>
             </tr>
           </thead>
@@ -110,7 +110,7 @@ class List extends Component {
                       <Delete key={id}
                         script={scripts.deleting}
                         onCancel={scripts.onCancel}
-                        onDeleteConfirmed={scripts.onDeleteConfirmed}/>
+                        onDeleted={scripts.onDeleted} />
                     </td>
                   </tr>
                 )
@@ -120,15 +120,15 @@ class List extends Component {
                   <th>{script.name}</th>
                   <td>
                     <SelectButton
-                      onClick={() => scripts.onSelect(id)}/>
+                      onClick={() => scripts.onSelect(id)} />
                   </td>
                   <td>
                     <EditButton
-                      onClick={() => scripts.onEdit(id)}/>
+                      onClick={() => scripts.onEdit(id)} />
                   </td>
                   <td>
                     <DeleteButton
-                      onClick={() => scripts.onDelete(id)}/>
+                      onClick={() => scripts.onDelete(id)} />
                   </td>
                 </tr>
               )
@@ -144,17 +144,18 @@ function msToTime(duration) {
   var milliseconds = parseInt((duration % 1000) / 100),
     seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),
-    hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+    hours = parseInt((duration / (1000 * 60 * 60)) % 24),
+    days = parseInt((duration / (1000 * 60 * 60 * 24)));
 
   hours = (hours < 10) ? "0" + hours : hours;
   minutes = (minutes < 10) ? "0" + minutes : minutes;
   seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-  return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+  return (days > 0 ? days + "d " : "") + hours + "h " + minutes + "m " + seconds + "s";
 }
 
 class Show extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       script: props.scripts.selected,
@@ -166,7 +167,7 @@ class Show extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.scripts.results !== prevProps.scripts.results) {
       let resultsElement = document.getElementById("results")
       if (resultsElement) {
@@ -176,8 +177,8 @@ class Show extends Component {
     }
   }
 
-  render () {
-    const { className = '', scripts, ...rest} = this.props
+  render() {
+    const { className = '', scripts, ...rest } = this.props
     return (
       <div {...rest} className={`BustabitScript Show ${className}`}>
         {this.state.script && (
@@ -186,12 +187,12 @@ class Show extends Component {
               <div>
                 <GoBackButton
                   className={`${scripts.isLoading ? 'is-loading' : ''}`}
-                  onClick={scripts.onDeselect}/>
+                  onClick={scripts.onDeselect} />
                 <EditButton
                   className="is-pulled-right"
-                  onClick={() => scripts.onEdit(this.state.script.id)}/>
+                  onClick={() => scripts.onEdit(this.state.script.id)} />
               </div>
-              <hr className="hr"/>
+              <hr className="hr" />
               <Config
                 config={this.state.script.config}
                 onChange={config => {
@@ -199,100 +200,100 @@ class Show extends Component {
                     script.config = config
                     return { script }
                   })
-                }}/>
-              <hr className="hr"/>
+                }} />
+              <hr className="hr" />
               <Control label="Starting Balance"
-                       icon="fas fa-coins">
-                <input  className="input is-normal"
-                        type="number" required={true}
-                        min="1" step="1"
-                        name="startingBalance"
-                        value={this.state.startingBalance/100}
-                        onChange={(event) => {
-                          let changes = { [event.target.name]: parseFloat(event.target.value) * 100 }
-                          this.setState(changes)
-                        }}/>
+                icon="fas fa-coins">
+                <input className="input is-normal"
+                  type="number" required={true}
+                  min="1" step="1"
+                  name="startingBalance"
+                  value={this.state.startingBalance / 100}
+                  onChange={(event) => {
+                    let changes = { [event.target.name]: parseFloat(event.target.value) * 100 }
+                    this.setState(changes)
+                  }} />
               </Control>
               <Control label="Hash"
-                       icon="fas fa-key">
-                <input  className="input is-normal"
-                        type="text" required={true}
-                        name="gameHash"
-                        value={this.state.gameHash}
-                        onChange={(event) => {
-                          this.setState({ [event.target.name]: String(event.target.value) })
-                        }}/>
+                icon="fas fa-key">
+                <input className="input is-normal"
+                  type="text" required={true}
+                  name="gameHash"
+                  value={this.state.gameHash}
+                  onChange={(event) => {
+                    this.setState({ [event.target.name]: String(event.target.value) })
+                  }} />
               </Control>
 
               <Control label="Games"
-                       icon="fas fa-hashtag">
-                <input  className="input is-normal"
-                        type="number" required={true}
-                        min="1" step="1"
-                        name="gameAmount"
-                        value={this.state.gameAmount}
-                        onChange={(event) => {
-                          this.setState({ [event.target.name]: parseInt(event.target.value) })
-                        }}/>
+                icon="fas fa-hashtag">
+                <input className="input is-normal"
+                  type="number" required={true}
+                  min="1" step="1"
+                  name="gameAmount"
+                  value={this.state.gameAmount}
+                  onChange={(event) => {
+                    this.setState({ [event.target.name]: parseInt(event.target.value) })
+                  }} />
               </Control>
-              <hr className="hr"/>
+              <hr className="hr" />
               <div className="field is-grouped">
                 <div className="control">
                   <button className={`button is-success ${scripts.isLoading ? 'is-loading' : ''}`}
-                          disabled={!(
-                            this.state.script &&
-                            this.state.gameHash &&
-                            this.state.gameAmount &&
-                            this.state.startingBalance
-                          )}
-                          onClick={() => {
-                            let args = {
-                              script: this.state.script,
-                              gameHash: this.state.gameHash,
-                              gameAmount: this.state.gameAmount,
-                              startingBalance: this.state.startingBalance,
-                              drawChart: this.state.drawChart,
-                              quickTest: this.state.quickTest,
-                            };
-                            scripts.onRun(args)
-                          }}>
+                    disabled={!(
+                      this.state.script &&
+                      this.state.gameHash &&
+                      this.state.gameAmount &&
+                      this.state.startingBalance
+                    )}
+                    onClick={() => {
+                      let args = {
+                        script: this.state.script,
+                        gameHash: this.state.gameHash,
+                        gameAmount: this.state.gameAmount,
+                        startingBalance: this.state.startingBalance,
+                        drawChart: this.state.drawChart,
+                        quickTest: this.state.quickTest,
+                      };
+                      scripts.onRun(args)
+                    }}>
                     Run Script
                   </button>
                 </div>
                 <div className="control">
-                <p>
-                  <label className="checkbox">
-                    <input className="checkbox"
-                           type="checkbox"
-                           name="drawChart"
-                           checked={this.state.drawChart}
-                           onChange={(event) => {
-                            this.setState({[event.target.name]: Boolean(event.target.checked)})
-                          }}/>
+                  <p>
+                    <label className="checkbox">
+                      <input className="checkbox"
+                        type="checkbox"
+                        name="drawChart"
+                        checked={this.state.drawChart}
+                        onChange={(event) => {
+                          this.setState({ [event.target.name]: Boolean(event.target.checked) })
+                        }} />
                     &nbsp;
                     Enable Chart
                   </label>
                   </p><p>
-                  <label className="checkbox">
-                    <input className="checkbox"
-                           type="checkbox"
-                           name="quickTest"
-                           checked={this.state.quickTest}
-                           onChange={(event) => {
-                            this.setState({[event.target.name]: Boolean(event.target.checked)})
-                          }}/>
+                    <label className="checkbox">
+                      <input className="checkbox"
+                        type="checkbox"
+                        name="quickTest"
+                        checked={this.state.quickTest}
+                        onChange={(event) => {
+                          this.setState({ [event.target.name]: Boolean(event.target.checked) })
+                        }} />
                     &nbsp;
                     Enable Log
                   </label>
-                 </p>
+                  </p>
                 </div>
               </div>
               <div>
                 <textarea className="textarea"
-                          value={scripts.results ? scripts.results.log : undefined}
-                          readOnly={true}
-                          style={{width: '100%', height: '200px', resize: 'both'}}
-                          placeholder="Script logs will appear here">
+                  value={scripts.results ? scripts.results.log : undefined}
+                  readOnly={true}
+                  style={{ width: '100%', height: '200px', resize: 'both' }}
+                  placeholder="Script logs will appear here">
                 </textarea>
               </div>
             </div>
@@ -300,7 +301,7 @@ class Show extends Component {
         )}
         {scripts.selected && scripts.results && (
           <section className="section">
-            <div id="results"/>
+            <div id="results" />
             {scripts.results.error && (
               <div className="notification is-danger">
                 <h3 className="is-3">Error</h3>
@@ -319,61 +320,61 @@ class Show extends Component {
                         <td>{scripts.results.bets} games</td>
                       </tr>
                       <tr>
-                      <th>Duration</th>
-                      <td>{msToTime(scripts.results.duration)}</td>
+                        <th>Duration</th>
+                        <td>{msToTime(scripts.results.duration)}</td>
                       </tr>
                       <tr>
-                      <th>Start Balance</th>
-                      <td>{scripts.results.startingBalance/100} bits</td>
+                        <th>Start Balance</th>
+                        <td>{scripts.results.startingBalance / 100} bits</td>
                       </tr>
                       <tr>
-                      <th>Smallest Bet</th>
-                      <td>{scripts.results.lowBet/100} bits</td>
+                        <th>Smallest Bet</th>
+                        <td>{scripts.results.lowBet / 100} bits</td>
                       </tr>
                       <tr>
-                      <th>Largest Bet</th>
-                      <td>{scripts.results.highBet/100} bits</td>
+                        <th>Largest Bet</th>
+                        <td>{scripts.results.highBet / 100} bits</td>
                       </tr>
                       <tr>
-                      <th>Win Streak</th>
-                      <td>{scripts.results.winStreak} games</td>
+                        <th>Win Streak</th>
+                        <td>{scripts.results.winStreak} games</td>
                       </tr>
                       <tr>
-                      <th>Lose Streak</th>
-                      <td>{scripts.results.loseStreak} games</td>
+                        <th>Lose Streak</th>
+                        <td>{scripts.results.loseStreak} games</td>
                       </tr>
                       <tr>
-                      <th>Streak Cost</th>
-                      <td>{scripts.results.streakSum/100} bits</td>
+                        <th>Streak Cost</th>
+                        <td>{scripts.results.streakSum / 100} bits</td>
                       </tr>
                       <tr>
                         <th>Profit ATL</th>
-                        <td>{(scripts.results.profitATL/100).toFixed(2)} bits</td>
+                        <td>{(scripts.results.profitATL / 100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>Profit ATH</th>
-                        <td>{(scripts.results.profitATH/100).toFixed(2)} bits</td>
+                        <td>{(scripts.results.profitATH / 100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
-                      <th>Balance ATL</th>
-                      <td>{(scripts.results.balanceATL/100).toFixed(2)} bits</td>
+                        <th>Balance ATL</th>
+                        <td>{(scripts.results.balanceATL / 100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
-                      <th>Balance ATH</th>
-                      <td>{(scripts.results.balanceATH/100).toFixed(2)} bits</td>
+                        <th>Balance ATH</th>
+                        <td>{(scripts.results.balanceATH / 100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>End Profit</th>
-                        <td className={`${scripts.results.profit >= 0 ? 'has-text-success' : 'has-text-danger'}`}>{(Math.round(scripts.results.profit)/100).toFixed(2)} bits</td>
+                        <td className={`${scripts.results.profit >= 0 ? 'has-text-success' : 'has-text-danger'}`}>{(Math.round(scripts.results.profit) / 100).toFixed(2)} bits</td>
                       </tr>
                       <tr>
                         <th>End Balance</th>
-                        <td>{scripts.results.balance/100} bits</td>
+                        <td>{scripts.results.balance / 100} bits</td>
                       </tr>
                       {scripts.results.profit > 0 && (
                         <tr>
                           <th>Profit per hour</th>
-                          <td>{Math.round(scripts.results.profitPerHour)/100} bits</td>
+                          <td>{Math.round(scripts.results.profitPerHour) / 100} bits</td>
                         </tr>
                       )}
                       <tr>
@@ -389,17 +390,17 @@ class Show extends Component {
                         viewBoxWidth: 960,
                         viewBoxHeight: 500,
                         data: scripts.results.chartData,
-                        xAccessor: (d) =>  { return d.id },
+                        xAccessor: (d) => { return d.id },
                         yAccessor: (d) => { return d.balance },
                         crosshairEnabled: true,
                         crosshairClassName: (d) => { return d.profit > 0 ? 'is-success' : 'is-danger' },
-                      }}/>
+                      }} />
                     </div>
                   </div>
                 )}
               </div>
             )}
-            <BackToTopButton/>
+            <BackToTopButton />
           </section>
         )}
       </div>
@@ -408,7 +409,7 @@ class Show extends Component {
 }
 
 class Delete extends Component {
-  render () {
+  render() {
     return (
       <div>
         {!this.props.script ? null : (
@@ -421,7 +422,7 @@ class Delete extends Component {
                 className="button"
                 onClick={() => {
                   let id = this.props.script.id
-                  this.props.onDeleteConfirmed(id, true)
+                  this.props.onDeleted(id, true)
                 }}>Yes</button>
               <button
                 className="button"
@@ -435,7 +436,7 @@ class Delete extends Component {
 }
 
 class EditButton extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <div className={`BustabitScript EditButton control ${className}`}>
@@ -450,7 +451,7 @@ class EditButton extends Component {
 }
 
 class SelectButton extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <div className={"BustabitScript SelectButton control"}>
@@ -465,7 +466,7 @@ class SelectButton extends Component {
 }
 
 class DeleteButton extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <div className={"BustabitScript DeleteButton control"}>
@@ -480,7 +481,7 @@ class DeleteButton extends Component {
 }
 
 class NewButton extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <div className="BustabitScript NewButton control is-pulled-right">
@@ -496,7 +497,7 @@ class NewButton extends Component {
 }
 
 class GoBackButton extends Component {
-  render () {
+  render() {
     const { className = '', ...rest } = this.props
     return (
       <a {...rest} className={`button is-normal ${className}`}>
@@ -510,14 +511,14 @@ class GoBackButton extends Component {
 }
 
 class BackToTopButton extends Component {
-  render () {
+  render() {
     const { className = '', onClick, ...rest } = this.props || {}
     return (
       <button {...rest} className={`button is-normal ${className}`}
-          onClick={() => {
-            window.scroll({ top: 0, behavior: 'smooth' })
-            if (onClick) onClick();
-          }}>
+        onClick={() => {
+          window.scroll({ top: 0, behavior: 'smooth' })
+          if (onClick) onClick();
+        }}>
         <span className="icon is-medium">
           <i className="fas fa-arrow-up"></i>
         </span>
@@ -529,25 +530,25 @@ class BackToTopButton extends Component {
 
 class Edit extends Component {
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.close = this.close.bind(this)
   }
 
-  close (event) {
+  close(event) {
     if (event) { event.preventDefault(); }
     this.props.onCancel()
   }
 
-  render () {
+  render() {
     return (
       <div className={'BustabitScript Edit modal' + (this.props.script ? ' is-active' : '')}>
         <div className="modal-background"
-             onClick={this.close}></div>
-        <div className="modal-card" style={{ width: '90%'}}>
+          onClick={this.close}></div>
+        <div className="modal-card" style={{ width: '90%' }}>
           <form onSubmit={(event) => {
             if (event) { event.preventDefault(); }
-            const id   = String(event.target.id.value || '').trim()
+            const id = String(event.target.id.value || '').trim()
             const name = String(event.target.name.value || '').trim()
             const text = String(event.target.text.value || '').trim()
             const script = { ...this.props.script, id, name, text }
@@ -556,7 +557,7 @@ class Edit extends Component {
             <header className="modal-card-head">
               <p className="modal-card-title">Edit Script</p>
               <button className="delete"
-                      onClick={this.close}>
+                onClick={this.close}>
               </button>
             </header>
             <section className="modal-card-body">
@@ -568,29 +569,29 @@ class Edit extends Component {
                   </pre>
                 </div>
               )}
-              <input  className="input"
-                      type="hidden"
-                      name="id"
-                      defaultValue={this.props.script ? this.props.script.id : ''}/>
-              <input  className="input is-normal"
-                      required={true}
-                      type="text"
-                      name="name"
-                      defaultValue={this.props.script ? this.props.script.name : ''}/>
+              <input className="input"
+                type="hidden"
+                name="id"
+                defaultValue={this.props.script ? this.props.script.id : ''} />
+              <input className="input is-normal"
+                required={true}
+                type="text"
+                name="name"
+                defaultValue={this.props.script ? this.props.script.name : ''} />
               <textarea className="textarea is-normal"
-                        required={true}
-                        rows="10"
-                        name="text"
-                        defaultValue={this.props.script ? this.props.script.text : ''}>
+                required={true}
+                rows="10"
+                name="text"
+                defaultValue={this.props.script ? this.props.script.text : ''}>
               </textarea>
             </section>
             <footer className="modal-card-foot">
               <button className="button is-success"
-                      type="submit">
+                type="submit">
                 Save Script
               </button>
               <button className="button"
-                      onClick={this.close}>
+                onClick={this.close}>
                 Cancel
               </button>
             </footer>
@@ -624,7 +625,7 @@ New.propTypes = {
 
 
 class Control extends Component {
-  render () {
+  render() {
     const { children, label, icon, className = '', ...rest } = this.props
     return (
       <div className="field is-horizontal">
