@@ -1,15 +1,25 @@
 {
-  "main.css": "/bustabit-script-simulator/static/css/main.1e1441b1.chunk.css",
-  "main.js": "/bustabit-script-simulator/static/js/main.cf5fb389.chunk.js",
-  "main.js.map": "/bustabit-script-simulator/static/js/main.cf5fb389.chunk.js.map",
-  "runtime~main.js": "/bustabit-script-simulator/static/js/runtime~main.f82a4ba3.js",
-  "runtime~main.js.map": "/bustabit-script-simulator/static/js/runtime~main.f82a4ba3.js.map",
-  "static/css/2.51b87201.chunk.css": "/bustabit-script-simulator/static/css/2.51b87201.chunk.css",
-  "static/js/2.c09480f2.chunk.js": "/bustabit-script-simulator/static/js/2.c09480f2.chunk.js",
-  "static/js/2.c09480f2.chunk.js.map": "/bustabit-script-simulator/static/js/2.c09480f2.chunk.js.map",
-  "index.html": "/bustabit-script-simulator/index.html",
-  "precache-manifest.b66e0b6aa26f51054ce166e7e0c0f8d6.js": "/bustabit-script-simulator/precache-manifest.b66e0b6aa26f51054ce166e7e0c0f8d6.js",
-  "service-worker.js": "/bustabit-script-simulator/service-worker.js",
-  "static/css/2.51b87201.chunk.css.map": "/bustabit-script-simulator/static/css/2.51b87201.chunk.css.map",
-  "static/css/main.1e1441b1.chunk.css.map": "/bustabit-script-simulator/static/css/main.1e1441b1.chunk.css.map"
+  "files": {
+    "main.css": "/bustabit-script-simulator/static/css/main.655e0c3e.chunk.css",
+    "main.js": "/bustabit-script-simulator/static/js/main.f7378fd4.chunk.js",
+    "main.js.map": "/bustabit-script-simulator/static/js/main.f7378fd4.chunk.js.map",
+    "runtime-main.js": "/bustabit-script-simulator/static/js/runtime-main.2c96e0c8.js",
+    "runtime-main.js.map": "/bustabit-script-simulator/static/js/runtime-main.2c96e0c8.js.map",
+    "static/css/2.263bab6e.chunk.css": "/bustabit-script-simulator/static/css/2.263bab6e.chunk.css",
+    "static/js/2.0e488a5c.chunk.js": "/bustabit-script-simulator/static/js/2.0e488a5c.chunk.js",
+    "static/js/2.0e488a5c.chunk.js.map": "/bustabit-script-simulator/static/js/2.0e488a5c.chunk.js.map",
+    "index.html": "/bustabit-script-simulator/index.html",
+    "precache-manifest.53595c013c31948338e62be7163ea0df.js": "/bustabit-script-simulator/precache-manifest.53595c013c31948338e62be7163ea0df.js",
+    "service-worker.js": "/bustabit-script-simulator/service-worker.js",
+    "static/css/2.263bab6e.chunk.css.map": "/bustabit-script-simulator/static/css/2.263bab6e.chunk.css.map",
+    "static/css/main.655e0c3e.chunk.css.map": "/bustabit-script-simulator/static/css/main.655e0c3e.chunk.css.map",
+    "static/js/2.0e488a5c.chunk.js.LICENSE.txt": "/bustabit-script-simulator/static/js/2.0e488a5c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2c96e0c8.js",
+    "static/css/2.263bab6e.chunk.css",
+    "static/js/2.0e488a5c.chunk.js",
+    "static/css/main.655e0c3e.chunk.css",
+    "static/js/main.f7378fd4.chunk.js"
+  ]
 }
