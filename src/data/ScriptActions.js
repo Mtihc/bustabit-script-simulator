@@ -18,7 +18,7 @@ const Actions = {
     ScriptDispatcher.dispatch({ type: ScriptActionTypes.DELETE, id })
   },
 
-  deleteConfirmed (id) {
+  deleted (id) {
     ScriptUtils.delete(id)
     ScriptDispatcher.dispatch({ type: ScriptActionTypes.DELETED, id })
   },
@@ -61,12 +61,11 @@ const Actions = {
     ScriptDispatcher.dispatch({ type: ScriptActionTypes.DESELECT })
   },
 
-  runScript (settings) {
+  run (settings) {
     Actions.save(settings.script)
-
     ScriptDispatcher.dispatch({ type: ScriptActionTypes.SIMULATE, settings });
     ScriptUtils
-      .runScript(settings)
+      .run(settings)
       .then((results) => {
         ScriptDispatcher.dispatch({ type: ScriptActionTypes.SIMULATED, results })
       })

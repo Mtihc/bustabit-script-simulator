@@ -48,6 +48,7 @@ const FieldTypes = Object.freeze({
   'noop': NoopInput,
   'radio': RadioInput,
   'text': TextInput,
+  'number': NumberInput,
 });
 
 function BalanceInput ({ name, label, value, optional, onChange }) {
@@ -204,6 +205,33 @@ function TextInput ({ name, label, value, optional, onChange }) {
                     required={!optional}
                     onChange={function (eventInfo) {
                       onChange(name, eventInfo.target.value)
+                    }}/>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function NumberInput ({ name, label, value, optional, onChange }) {
+  let id = `config.${name}`
+  return (
+    <div className="field is-horizontal" key={id}>
+      <div className="field-label is-normal">
+        <label htmlFor={id} className="label">{label || name}</label>
+      </div>
+      <div className="field-body">
+        <div className="field">
+          <div className="control">
+            <input  type="number"
+                    className="input"
+                    id={id}
+                    name={name}
+                    value={parseFloat(value)}
+                    required={!optional}
+                    step="1"
+                    onChange={function (eventInfo) {
+                      onChange(name, parseFloat(eventInfo.target.value))
                     }}/>
           </div>
         </div>

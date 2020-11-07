@@ -285,10 +285,10 @@ function d3LineChart ({
     g_lines.selectAll(".data-point")
            .data(data)
            .enter().append("circle")
-           .attr("class", function (d) { return "data-point " + (d.profit > 0 ? 'is-success' : 'is-danger') })
+           .attr("class", function (d) { return "data-point " + (d.profit === 0 ? 'is-warning' : (d.profit > 0 ? 'is-success' : 'is-danger')) })
            .attr("cx", lineX)
            .attr("cy", lineY)
-           .attr("r", 5)
+           .attr("r", 0)
 
     context.append("path")
            .datum(data)

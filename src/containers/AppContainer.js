@@ -35,10 +35,10 @@ function getState() {
         onCancel: ScriptActions.cancel,
         onSave: ScriptActions.save,
         onDelete: ScriptActions.delete,
-        onDeleteConfirmed: ScriptActions.deleteConfirmed,
+        onDeleted: ScriptActions.deleted,
         onSelect: ScriptActions.select,
         onDeselect: ScriptActions.deselect,
-        onRunScript: ScriptActions.runScript,
+        onRun: ScriptActions.run,
       }
     },
   };
