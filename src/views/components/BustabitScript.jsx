@@ -141,6 +141,7 @@ class List extends Component {
 }
 
 function msToTime(duration) {
+  // eslint-disable-next-line
   var milliseconds = parseInt((duration % 1000) / 100),
     seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),

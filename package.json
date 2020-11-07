@@ -1,7 +1,7 @@
 {
   "name": "bustabit-script-simulator",
   "version": "0.1.0",
-  "homepage": "http://dsetzer.github.io/bustabit-script-simulator",
+  "homepage": "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
     "bulma": "^0.7.2",
