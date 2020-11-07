@@ -27,8 +27,8 @@ class App extends Component {
   }
 
   render() {
-    const viewState = this.viewState()
-    const { scripts, className = '', ...rest } = this.props
+    const viewState = this.viewState();
+    const { scripts, className = '', ...rest } = this.props;
     return (
       <div {...rest} className={className}>
         {(viewState === 'list' || viewState === 'delete') && (
@@ -60,7 +60,7 @@ class App extends Component {
 
 class Title extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <div {...rest} className={`${className}`}>
         <p>
@@ -81,8 +81,8 @@ class Title extends Component {
 
 class List extends Component {
   render() {
-    const { className = '', scripts, ...rest } = this.props
-    let deletingId = scripts.deleting ? scripts.deleting.id : undefined
+    const { className = '', scripts, ...rest } = this.props;
+    let deletingId = scripts.deleting ? scripts.deleting.id : undefined;
     return (
       <div {...rest} className={`BustabitScript-List box is-inline-block ${className}`}>
         <table className="table is-hoverable">
@@ -100,8 +100,8 @@ class List extends Component {
             </tr>
           </thead>
           <tbody>
-            {scripts.items.entrySeq().map(([index, script]) => {
-              let id = script.id
+            {scripts.items.entrySeq().map(([, script]) => {
+              let id = script.id;
               if (id === deletingId) {
                 return (
                   <tr key={id}>
@@ -141,12 +141,10 @@ class List extends Component {
 }
 
 function msToTime(duration) {
-  // eslint-disable-next-line
-  var milliseconds = parseInt((duration % 1000) / 100),
-    seconds = parseInt((duration / 1000) % 60),
-    minutes = parseInt((duration / (1000 * 60)) % 60),
-    hours = parseInt((duration / (1000 * 60 * 60)) % 24),
-    days = parseInt((duration / (1000 * 60 * 60 * 24)));
+  let seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60),
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+    days = Math.floor(duration / (1000 * 60 * 60 * 24));
 
   hours = (hours < 10) ? "0" + hours : hours;
   minutes = (minutes < 10) ? "0" + minutes : minutes;
@@ -157,7 +155,7 @@ function msToTime(duration) {
 
 class Show extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       script: props.scripts.selected,
       startingBalance: 1000000,
@@ -170,7 +168,7 @@ class Show extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.scripts.results !== prevProps.scripts.results) {
-      let resultsElement = document.getElementById("results")
+      let resultsElement = document.getElementById("results");
       if (resultsElement) {
         const y = resultsElement.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ behavior: 'smooth', top: y })
@@ -179,7 +177,7 @@ class Show extends Component {
   }
 
   render() {
-    const { className = '', scripts, ...rest } = this.props
+    const { className = '', scripts, ...rest } = this.props;
     return (
       <div {...rest} className={`BustabitScript Show ${className}`}>
         {this.state.script && (
@@ -198,7 +196,7 @@ class Show extends Component {
                 config={this.state.script.config}
                 onChange={config => {
                   this.setState(({ script }) => {
-                    script.config = config
+                    script.config = config;
                     return { script }
                   })
                 }} />
@@ -211,7 +209,7 @@ class Show extends Component {
                   name="startingBalance"
                   value={this.state.startingBalance / 100}
                   onChange={(event) => {
-                    let changes = { [event.target.name]: parseFloat(event.target.value) * 100 }
+                    let changes = { [event.target.name]: parseFloat(event.target.value) * 100 };
                     this.setState(changes)
                   }} />
               </Control>
@@ -422,7 +420,7 @@ class Delete extends Component {
               <button
                 className="button"
                 onClick={() => {
-                  let id = this.props.script.id
+                  let id = this.props.script.id;
                   this.props.onDeleted(id, true)
                 }}>Yes</button>
               <button
@@ -438,12 +436,12 @@ class Delete extends Component {
 
 class EditButton extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <div className={`BustabitScript EditButton control ${className}`}>
         <button {...rest} className={`button is-info ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
-            <i className="fas fa-eye"></i>
+            <i className="fas fa-eye"/>
           </span>
         </button>
       </div>
@@ -453,12 +451,12 @@ class EditButton extends Component {
 
 class SelectButton extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <div className={"BustabitScript SelectButton control"}>
         <button {...rest} className={`button ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
-            <i className="fas fa-play"></i>
+            <i className="fas fa-play"/>
           </span>
         </button>
       </div>
@@ -468,12 +466,12 @@ class SelectButton extends Component {
 
 class DeleteButton extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <div className={"BustabitScript DeleteButton control"}>
         <button {...rest} className={`button ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
-            <i className="fas fa-trash-alt"></i>
+            <i className="fas fa-trash-alt"/>
           </span>
         </button>
       </div>
@@ -483,12 +481,12 @@ class DeleteButton extends Component {
 
 class NewButton extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <div className="BustabitScript NewButton control is-pulled-right">
         <button {...rest} className={`button is-success ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
-            <i className="fas fa-plus"></i>
+            <i className="fas fa-plus"/>
           </span>
           <span>New</span>
         </button>
@@ -499,11 +497,11 @@ class NewButton extends Component {
 
 class GoBackButton extends Component {
   render() {
-    const { className = '', ...rest } = this.props
+    const { className = '', ...rest } = this.props;
     return (
       <a {...rest} className={`button is-normal ${className}`}>
         <span className="icon is-medium">
-          <i className="fas fa-arrow-left"></i>
+          <i className="fas fa-arrow-left"/>
         </span>
         <span>Go Back</span>
       </a>
@@ -513,15 +511,15 @@ class GoBackButton extends Component {
 
 class BackToTopButton extends Component {
   render() {
-    const { className = '', onClick, ...rest } = this.props || {}
+    const { className = '', onClick, ...rest } = this.props || {};
     return (
       <button {...rest} className={`button is-normal ${className}`}
         onClick={() => {
-          window.scroll({ top: 0, behavior: 'smooth' })
+          window.scroll({ top: 0, behavior: 'smooth' });
           if (onClick) onClick();
         }}>
         <span className="icon is-medium">
-          <i className="fas fa-arrow-up"></i>
+          <i className="fas fa-arrow-up"/>
         </span>
         <span>Back to Top</span>
       </button>
@@ -532,7 +530,7 @@ class BackToTopButton extends Component {
 class Edit extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.close = this.close.bind(this)
   }
 
@@ -544,15 +542,14 @@ class Edit extends Component {
   render() {
     return (
       <div className={'BustabitScript Edit modal' + (this.props.script ? ' is-active' : '')}>
-        <div className="modal-background"
-          onClick={this.close}></div>
+        <div className="modal-background" onClick={this.close}/>
         <div className="modal-card" style={{ width: '90%' }}>
           <form onSubmit={(event) => {
             if (event) { event.preventDefault(); }
-            const id = String(event.target.id.value || '').trim()
-            const name = String(event.target.name.value || '').trim()
-            const text = String(event.target.text.value || '').trim()
-            const script = { ...this.props.script, id, name, text }
+            const id = String(event.target['id'].value || '').trim();
+            const name = String(event.target['name'].value || '').trim();
+            const text = String(event.target['text'].value || '').trim();
+            const script = { ...this.props.script, id, name, text };
             this.props.onSave(script)
           }}>
             <header className="modal-card-head">
@@ -611,7 +608,7 @@ Edit.propTypes = {
   }).isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired
-}
+};
 
 class New extends Edit { }
 
@@ -622,12 +619,12 @@ New.propTypes = {
   }),
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired
-}
+};
 
 
 class Control extends Component {
   render() {
-    const { children, label, icon, className = '', ...rest } = this.props
+    const { children, label, icon, className = '', ...rest } = this.props;
     return (
       <div className="field is-horizontal">
         {label === undefined ? null : (
@@ -643,7 +640,7 @@ class Control extends Component {
               {children}
               {icon && (
                 <span className="icon is-small is-left">
-                  <i className={icon}></i>
+                  <i className={icon}/>
                 </span>
               )}
             </div>
