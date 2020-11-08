@@ -2,7 +2,6 @@ import React from 'react';
 import 'bulma/css/bulma.css'
 import './AppView.css';
 import BustabitScript from './components/BustabitScript'
-import { OptionsButton } from './components/Options'
 import { DisclaimerButton } from './components/Disclaimer'
 import { DonateButton } from './components/Donate'
 
@@ -19,7 +18,6 @@ function AppView(props) {
           <div className="navbar-end">
             <div className="navbar-item">
               <div className="buttons">
-                <OptionsButton className="is-small" />
                 <DisclaimerButton className="is-small" />
                 <DonateButton className="is-small" />
               </div>
