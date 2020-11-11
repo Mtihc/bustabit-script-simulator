@@ -1,11 +1,11 @@
 import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
 import ScriptActionTypes from './ScriptActionTypes';
-import ScriptDispatcher from './ScriptDispatcher';
+import AppDispatcher from './AppDispatcher';
 
 class ScriptStore extends ReduceStore {
   constructor() {
-    super(ScriptDispatcher);
+    super(AppDispatcher);
   }
 
   getInitialState() {

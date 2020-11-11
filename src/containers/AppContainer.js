@@ -3,17 +3,21 @@ import {Container} from 'flux/utils';
 import ScriptStore from '../data/ScriptStore';
 import ScriptListStore from '../data/ScriptListStore';
 import ScriptActions from '../data/ScriptActions';
+import NotificationStore from '../data/NotificationStore';
+import NotificationActions from '../data/NotificationActions'
 
 function getStores() {
   return [
     ScriptStore,
-    ScriptListStore
+    ScriptListStore,
+    NotificationStore
   ];
 }
 
 function getState() {
   let items = ScriptStore.getState()
   let list = ScriptListStore.getState()
+  let notifications = NotificationStore.getState()
   return {
     scripts: {
       ...{
@@ -41,6 +45,13 @@ function getState() {
         onRun: ScriptActions.run,
       }
     },
+    notifications: {
+      items: notifications,
+      ...{
+        open: NotificationActions.open,
+        close: NotificationActions.close
+      }
+    }
   };
 }
 

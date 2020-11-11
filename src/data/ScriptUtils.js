@@ -1,3 +1,4 @@
+import { getUniqueID } from './AppUtils'
 import ScriptConstants from './ScriptConstants'
 import simulate from './simulate'
 import CryptoJS from "crypto-js"
@@ -75,15 +76,6 @@ function getConfigFromScriptText(script) {
 
 function getScriptTextWithoutConfig(script) {
   return splitConfigFromScriptText(script)[1]
-}
-
-function getUniqueID(existingIds) {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    let id = String(CryptoJS.lib.WordArray.random(16))
-    if (!existingIds || existingIds.indexOf(id) === -1) {
-      return id
-    }
-  }
 }
 
 const ScriptUtils = {

@@ -4,6 +4,7 @@ import './AppView.css';
 import BustabitScript from './components/BustabitScript'
 import { DisclaimerButton } from './components/Disclaimer'
 import { DonateButton } from './components/Donate'
+import { NotificationList } from './components/Notifications'
 
 function AppView(props) {
   return (
@@ -28,6 +29,7 @@ function AppView(props) {
       <main className="section has-text-centered">
         <BustabitScript.App scripts={props.scripts} />
       </main>
+      <NotificationList notifications={props.notifications}/>
     </div>
   );
 }
