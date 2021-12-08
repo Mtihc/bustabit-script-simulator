@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Config from './BustabitScriptConfig';
 import LineChart from './LineChart'
+import { OptionsMenu, OptionsMenuItem } from './OptionsMenu';
 import PropTypes from 'prop-types'
-import './BustabitScript.css'
+import './BustabitScript.sass'
 
 class App extends Component {
 
@@ -30,7 +31,7 @@ class App extends Component {
     const viewState = this.viewState();
     const { scripts, className = '', ...rest } = this.props;
     return (
-      <div {...rest} className={className}>
+      <div {...rest} className={`BustabitScript-App ${className}`.trim()}>
         {(viewState === 'list' || viewState === 'delete') && (
           <List
             scripts={scripts} />
@@ -84,57 +85,68 @@ class List extends Component {
     const { className = '', scripts, ...rest } = this.props;
     let deletingId = scripts.deleting ? scripts.deleting.id : undefined;
     return (
-      <div {...rest} className={`BustabitScript-List box is-inline-block ${className}`}>
-        <table className="table is-hoverable">
-          <thead>
-            <tr>
-              <th colSpan="2">
-                <h3 className="subtitle is-4">
-                  My Scripts
-                </h3>
-              </th>
-              <th colSpan="2">
-                <NewButton
-                  onClick={() => scripts.onNew()} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {scripts.items.entrySeq().map(([, script]) => {
-              let id = script.id;
-              if (id === deletingId) {
+      <div {...rest} className={`BustabitScript-List is-inline-block ${className}`.trim()}>
+        <div className={"box has-text-left"}>
+          <table className="table is-hoverable">
+            <thead>
+              <tr>
+                <th colSpan="4">
+                  <h3 className="subtitle is-4 is-inline-block m-0">
+                    My Scripts
+                  </h3>
+                  <div className={"is-pulled-right"}>
+                    <OptionsMenu
+                      className={"is-inline-block"}>
+                      <OptionsMenuItem
+                        iconClassName={"fas fa-file-export"}
+                        onClick={scripts.exportScripts}>
+                        Export All Scripts
+                      </OptionsMenuItem>
+                    </OptionsMenu>
+                    <NewButton
+                      className={"is-inline-block ml-1"}
+                      onClick={() => scripts.onNew()} />
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {scripts.items.entrySeq().map(([, script]) => {
+                let id = script.id;
+                if (id === deletingId) {
+                  return (
+                    <tr key={id}>
+                      <th>{script.name}</th>
+                      <td colSpan="3" style={{ maxWidth: '9rem' }}>
+                        <Delete key={id}
+                          script={scripts.deleting}
+                          onCancel={scripts.onCancel}
+                          onDeleted={scripts.onDeleted} />
+                      </td>
+                    </tr>
+                  )
+                }
                 return (
                   <tr key={id}>
                     <th>{script.name}</th>
-                    <td colSpan="3" style={{ maxWidth: '9rem' }}>
-                      <Delete key={id}
-                        script={scripts.deleting}
-                        onCancel={scripts.onCancel}
-                        onDeleted={scripts.onDeleted} />
+                    <td>
+                      <SelectButton
+                        onClick={() => scripts.onSelect(id)} />
+                    </td>
+                    <td>
+                      <EditButton
+                        onClick={() => scripts.onEdit(id)} />
+                    </td>
+                    <td>
+                      <DeleteButton
+                        onClick={() => scripts.onDelete(id)} />
                     </td>
                   </tr>
                 )
-              }
-              return (
-                <tr key={id}>
-                  <th>{script.name}</th>
-                  <td>
-                    <SelectButton
-                      onClick={() => scripts.onSelect(id)} />
-                  </td>
-                  <td>
-                    <EditButton
-                      onClick={() => scripts.onEdit(id)} />
-                  </td>
-                  <td>
-                    <DeleteButton
-                      onClick={() => scripts.onDelete(id)} />
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }
@@ -179,7 +191,7 @@ class Show extends Component {
   render() {
     const { className = '', scripts, ...rest } = this.props;
     return (
-      <div {...rest} className={`BustabitScript Show ${className}`}>
+      <div {...rest} className={`BustabitScript-Show ${className}`}>
         {this.state.script && (
           <div key={this.state.script.id}>
             <div className="box is-inline-block has-text-left">
@@ -187,9 +199,24 @@ class Show extends Component {
                 <GoBackButton
                   className={`${scripts.isLoading ? 'is-loading' : ''}`}
                   onClick={scripts.onDeselect} />
-                <EditButton
-                  className="is-pulled-right"
-                  onClick={() => scripts.onEdit(this.state.script.id)} />
+                <div className="is-pulled-right pr-4">
+                  <OptionsMenu
+                    className={"is-inline-block"}>
+                    <OptionsMenuItem
+                      iconClassName={"fas fa-file-export"}
+                      onClick={() => scripts.exportScript(this.state.script.id)}>
+                      Export Script
+                    </OptionsMenuItem>
+                    <OptionsMenuItem
+                      iconClassName={"fas fa-copy"}
+                      onClick={() => scripts.copyScript(this.state.script.id)}>
+                      Copy Script
+                    </OptionsMenuItem>
+                  </OptionsMenu>
+                  <EditButton
+                      className={"is-inline-block ml-1"}
+                      onClick={() => scripts.onEdit(this.state.script.id)} />
+                </div>
               </div>
               <hr className="hr" />
               <Config
@@ -483,8 +510,8 @@ class NewButton extends Component {
   render() {
     const { className = '', ...rest } = this.props;
     return (
-      <div className="BustabitScript NewButton control is-pulled-right">
-        <button {...rest} className={`button is-success ${className}`}>
+      <div className={`BustabitScript NewButton control ${className}`.trim()}>
+        <button {...rest} className="button is-success">
           <span className="icon is-normal" width="2em" height="2em">
             <i className="fas fa-plus"/>
           </span>
@@ -541,7 +568,7 @@ class Edit extends Component {
 
   render() {
     return (
-      <div className={'BustabitScript Edit modal' + (this.props.script ? ' is-active' : '')}>
+      <div className={'BustabitScript-Edit modal' + (this.props.script ? ' is-active' : '')}>
         <div className="modal-background" onClick={this.close}/>
         <div className="modal-card" style={{ width: '90%' }}>
           <form onSubmit={(event) => {
@@ -651,5 +678,5 @@ class Control extends Component {
   }
 }
 
-
-export default { App, Title, EditButton }
+const BustabitScript = { App, Title, EditButton }
+export default BustabitScript

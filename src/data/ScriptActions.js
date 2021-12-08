@@ -29,6 +29,7 @@ const Actions = {
       try {
         ScriptUtils.save(script)
         AppDispatcher.dispatch({ type: ScriptActionTypes.CREATED, script })
+        NotificationActions.success('Script saved.', { autoCloseTimeout: 2000, container: 'bottom-left' })
       } catch (e) {
         AppDispatcher.dispatch({ type: ScriptActionTypes.CREATE_ERROR, script, error: e })
       }
@@ -36,6 +37,7 @@ const Actions = {
       try {
         ScriptUtils.save(script)
         AppDispatcher.dispatch({ type: ScriptActionTypes.UPDATED, script })
+        NotificationActions.success('Script saved.', { autoCloseTimeout: 2000, container: 'bottom-left' })
       } catch (e) {
         AppDispatcher.dispatch({ type: ScriptActionTypes.UPDATE_ERROR, script, error: e })
       }
@@ -68,8 +70,30 @@ const Actions = {
     ScriptUtils
       .run(settings)
       .then((results) => {
-        ScriptDispatcher.dispatch({ type: ScriptActionTypes.SIMULATED, results })
+        AppDispatcher.dispatch({ type: ScriptActionTypes.SIMULATED, results })
       })
+  },
+
+  exportScripts () {
+    ScriptUtils.exportScripts()
+      .then(() => {
+        NotificationActions.success('Scripts exported.', { autoCloseTimeout: 2000, container: 'bottom-left' })
+      })
+      .catch(error => {
+        NotificationActions.error(error.message, { autoCloseTimeout: 3000 })
+      })
+  },
+
+  exportScript (id) {
+    ScriptUtils.exportScript(id)
+  },
+
+  copyScript (id) {
+    let scripts = ScriptUtils.load();
+    let script = scripts[id];
+    ScriptUtils.setClipboardContent(script.text).then(() => {
+      NotificationActions.success('Script copied to clipboard', { autoCloseTimeout: 3000, container: 'bottom-left' })
+    })
   }
 };
 

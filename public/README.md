@@ -31,6 +31,7 @@ You can simulate your script on thousands of bustabit games, in a few seconds.
   - `userInfo`
   - `log(message: string)`
   - `stop(reason: string)`
+  - `notify(message: string)`
 - The engine behaves as much as possible like the one on bustabit.
 - The engine provides much of the same interface as the one on bustabit.
     - `engine.bet(wager: number, payout: number)`

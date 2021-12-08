@@ -1,7 +1,9 @@
 import { getUniqueID } from './AppUtils'
 import ScriptConstants from './ScriptConstants'
 import simulate from './simulate'
-import CryptoJS from "crypto-js"
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver';
+
 /*
  Helper functions
 */
@@ -171,6 +173,35 @@ const ScriptUtils = {
     }
   },
 
-}
+  exportScripts () {
+    let scripts = getLocalStorageScripts()
+    if (!scripts) {
+      return Promise.reject(new Error('There are no scripts to export.'));
+    }
+    let zip = new JSZip();
+    Object.values(scripts).forEach(script => {
+      zip.file(`${script.name}.js`, script.text)
+    })
+    return zip.generateAsync({type:"blob"})
+        .then(function (blob) {
+          let dateTime = new Date().toISOString()
+                                   .replace(/:\d\d\.\d\d\dZ$/, '')
+                                   .replace(':', '_');
+          saveAs(blob, `Bustabit Scripts ${dateTime}.zip`);
+        });
+  },
+
+  exportScript (id) {
+    let scripts = getLocalStorageScripts()
+    let script = scripts[id]
+    let blob = new Blob([script.text], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, `${script.name}.js`)
+  },
+
+  setClipboardContent (text) {
+    return navigator.clipboard.writeText(text)
+  },
+
+};
 
 export default ScriptUtils

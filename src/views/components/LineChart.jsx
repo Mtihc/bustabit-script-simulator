@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ReactDOM from "react-dom";
 import * as d3 from 'd3';
 
-import './LineChart.css';
+import './LineChart.sass';
 
 class LineChart extends Component {
   constructor (props) {

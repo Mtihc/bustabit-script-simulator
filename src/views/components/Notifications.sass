@@ -1,0 +1,51 @@
+.NotificationsContainer
+    position: absolute
+    width: 20%
+    .FlipMove
+        position: relative
+        width: 100%
+        display: flex
+.NotificationsContainer-top-left
+    margin: 1rem 0 0 1rem
+    top: 0
+    left: 0
+    .FlipMove
+        flex-direction: column
+.NotificationsContainer-top-right
+    margin: 1rem 1rem 0 0
+    top: 0
+    right: 0
+    .FlipMove
+        flex-direction: column
+.NotificationsContainer-bottom-left
+    margin: 0 0 1rem 1rem
+    bottom: 0
+    left: 0
+    .FlipMove
+        flex-direction: column-reverse
+.NotificationsContainer-bottom-right
+    margin: 0 1rem 1rem 0
+    bottom: 0
+    right: 0
+    .FlipMove
+        flex-direction: column-reverse
+
+.Notification
+    z-index: 999
+
+.NotificationsContainer-top-left
+    .Notification:not(:last-child)
+        margin-bottom: 1rem
+        margin-top: unset
+.NotificationsContainer-top-right
+    .Notification:not(:last-child)
+        margin-bottom: 1rem
+        margin-top: unset
+.NotificationsContainer-bottom-left
+    .Notification:not(:last-child)
+        margin-top: 1rem
+        margin-bottom: unset
+.NotificationsContainer-bottom-right
+    .Notification:not(:last-child)
+        margin-top: 1rem
+        margin-bottom: unset

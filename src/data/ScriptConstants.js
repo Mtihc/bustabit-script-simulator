@@ -234,7 +234,8 @@ log('Simulation begins here...')`,
   config: undefined
 }
 
-export default {
+const ScriptConstants = {
   SCRIPT_SAMPLES,
   NEW_SCRIPT,
 }
+export default ScriptConstants

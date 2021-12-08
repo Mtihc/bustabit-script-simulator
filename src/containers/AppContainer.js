@@ -43,6 +43,9 @@ function getState() {
         onSelect: ScriptActions.select,
         onDeselect: ScriptActions.deselect,
         onRun: ScriptActions.run,
+        exportScripts: ScriptActions.exportScripts,
+        exportScript: ScriptActions.exportScript,
+        copyScript: ScriptActions.copyScript,
       }
     },
     notifications: {
