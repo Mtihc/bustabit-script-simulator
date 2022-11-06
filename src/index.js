@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.sass';
 import AppContainer from './containers/AppContainer';
 import * as serviceWorker from './serviceWorker';
+import NotificationActions from './data/NotificationActions';
+window.NotificationActions = NotificationActions;
 
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 

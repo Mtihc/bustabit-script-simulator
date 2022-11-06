@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Config from './BustabitScriptConfig';
 import LineChart from './LineChart'
+import { OptionsMenu, OptionsMenuItem } from './OptionsMenu';
 import PropTypes from 'prop-types'
-import './BustabitScript.css'
+import './BustabitScript.sass'
+import {version} from "../../../package.json";
 
 class App extends Component {
 
@@ -30,7 +32,7 @@ class App extends Component {
     const viewState = this.viewState();
     const { scripts, className = '', ...rest } = this.props;
     return (
-      <div {...rest} className={className}>
+      <div {...rest} className={`BustabitScript-App ${className}`.trim()}>
         {(viewState === 'list' || viewState === 'delete') && (
           <List
             scripts={scripts} />
@@ -40,6 +42,7 @@ class App extends Component {
             script={scripts.editing}
             error={scripts.updateError}
             onCancel={scripts.onCancel}
+            onRestore={scripts.onRestore}
             onSave={scripts.onSave} />
         )}
         {viewState === 'new' && (
@@ -73,6 +76,8 @@ class Title extends Component {
           <span className="script-simulator-title">
             Script Simulator
           </span>
+          <span className="ml-1"></span>
+          <span className="script-simulator-version">v{version}</span>
         </p>
       </div>
     )
@@ -84,57 +89,73 @@ class List extends Component {
     const { className = '', scripts, ...rest } = this.props;
     let deletingId = scripts.deleting ? scripts.deleting.id : undefined;
     return (
-      <div {...rest} className={`BustabitScript-List box is-inline-block ${className}`}>
-        <table className="table is-hoverable">
-          <thead>
-            <tr>
-              <th colSpan="2">
-                <h3 className="subtitle is-4">
-                  My Scripts
-                </h3>
-              </th>
-              <th colSpan="2">
-                <NewButton
-                  onClick={() => scripts.onNew()} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {scripts.items.entrySeq().map(([, script]) => {
-              let id = script.id;
-              if (id === deletingId) {
+      <div {...rest} className={`BustabitScript-List is-inline-block ${className}`.trim()}>
+        <div className={"box has-text-left"}>
+          <table className="table is-transparent">
+            <thead>
+              <tr>
+                <th colSpan="4">
+                  <h3 className="subtitle is-4 is-inline-block m-0">
+                    My Scripts
+                  </h3>
+                  <div className={"is-pulled-right"}>
+                    <OptionsMenu
+                      className={"is-inline-block"}>
+                      <OptionsMenuItem
+                          iconClassName={"fas fa-file-export"}
+                          onClick={scripts.exportScripts}>
+                        Export All Scripts
+                      </OptionsMenuItem>
+                      <OptionsMenuItem
+                          iconClassName={"fas fa-undo"}
+                          onClick={scripts.restoreSamples}>
+                        Restore Sample Scripts
+                      </OptionsMenuItem>
+                    </OptionsMenu>
+                    <NewButton
+                      className={"is-inline-block ml-1"}
+                      onClick={() => scripts.onNew()} />
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {scripts.items.entrySeq().map(([, script]) => {
+                let id = script.id;
+                if (id === deletingId) {
+                  return (
+                    <tr key={id}>
+                      <th>{script.name}</th>
+                      <td colSpan="3" style={{ maxWidth: '9rem' }}>
+                        <Delete key={id}
+                          script={scripts.deleting}
+                          onCancel={scripts.onCancel}
+                          onDeleted={scripts.onDeleted} />
+                      </td>
+                    </tr>
+                  )
+                }
                 return (
                   <tr key={id}>
                     <th>{script.name}</th>
-                    <td colSpan="3" style={{ maxWidth: '9rem' }}>
-                      <Delete key={id}
-                        script={scripts.deleting}
-                        onCancel={scripts.onCancel}
-                        onDeleted={scripts.onDeleted} />
+                    <td>
+                      <SelectButton
+                        onClick={() => scripts.onSelect(id)} />
+                    </td>
+                    <td>
+                      <EditButton
+                        onClick={() => scripts.onEdit(id)} />
+                    </td>
+                    <td>
+                      <DeleteButton
+                        onClick={() => scripts.onDelete(id)} />
                     </td>
                   </tr>
                 )
-              }
-              return (
-                <tr key={id}>
-                  <th>{script.name}</th>
-                  <td>
-                    <SelectButton
-                      onClick={() => scripts.onSelect(id)} />
-                  </td>
-                  <td>
-                    <EditButton
-                      onClick={() => scripts.onEdit(id)} />
-                  </td>
-                  <td>
-                    <DeleteButton
-                      onClick={() => scripts.onDelete(id)} />
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }
@@ -179,7 +200,7 @@ class Show extends Component {
   render() {
     const { className = '', scripts, ...rest } = this.props;
     return (
-      <div {...rest} className={`BustabitScript Show ${className}`}>
+      <div {...rest} className={`BustabitScript-Show ${className}`}>
         {this.state.script && (
           <div key={this.state.script.id}>
             <div className="box is-inline-block has-text-left">
@@ -187,9 +208,24 @@ class Show extends Component {
                 <GoBackButton
                   className={`${scripts.isLoading ? 'is-loading' : ''}`}
                   onClick={scripts.onDeselect} />
-                <EditButton
-                  className="is-pulled-right"
-                  onClick={() => scripts.onEdit(this.state.script.id)} />
+                <div className="is-pulled-right pr-4">
+                  <OptionsMenu
+                    className={"is-inline-block"}>
+                    <OptionsMenuItem
+                      iconClassName={"fas fa-file-export"}
+                      onClick={() => scripts.exportScript(this.state.script.id)}>
+                      Export Script
+                    </OptionsMenuItem>
+                    <OptionsMenuItem
+                      iconClassName={"fas fa-copy"}
+                      onClick={() => scripts.copyScript(this.state.script.id)}>
+                      Copy Script
+                    </OptionsMenuItem>
+                  </OptionsMenu>
+                  <EditButton
+                      className={"is-inline-block ml-1"}
+                      onClick={() => scripts.onEdit(this.state.script.id)} />
+                </div>
               </div>
               <hr className="hr" />
               <Config
@@ -312,7 +348,7 @@ class Show extends Component {
             {!scripts.results.error && (
               <div className="columns">
                 <div className="column is-one-fifth">
-                  <table className={"table is-hoverable box is-inline-block"}>
+                  <table className={"table box is-inline-block"}>
                     <tbody>
                       <tr>
                         <th>Games Played</th>
@@ -418,7 +454,7 @@ class Delete extends Component {
             </p>
             <div className="buttons is-pulled-right">
               <button
-                className="button"
+                className="button is-danger"
                 onClick={() => {
                   let id = this.props.script.id;
                   this.props.onDeleted(id, true)
@@ -469,7 +505,7 @@ class DeleteButton extends Component {
     const { className = '', ...rest } = this.props;
     return (
       <div className={"BustabitScript DeleteButton control"}>
-        <button {...rest} className={`button ${className}`}>
+        <button {...rest} className={`button is-light ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
             <i className="fas fa-trash-alt"/>
           </span>
@@ -483,8 +519,8 @@ class NewButton extends Component {
   render() {
     const { className = '', ...rest } = this.props;
     return (
-      <div className="BustabitScript NewButton control is-pulled-right">
-        <button {...rest} className={`button is-success ${className}`}>
+      <div className={`BustabitScript NewButton control ${className}`.trim()}>
+        <button {...rest} className="button is-success">
           <span className="icon is-normal" width="2em" height="2em">
             <i className="fas fa-plus"/>
           </span>
@@ -532,6 +568,7 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.close = this.close.bind(this)
+    this.restore = this.restore.bind(this)
   }
 
   close(event) {
@@ -539,9 +576,14 @@ class Edit extends Component {
     this.props.onCancel()
   }
 
+  restore(event) {
+    if (event) { event.preventDefault(); }
+    this.props.onRestore(this.props.script.id)
+  }
+
   render() {
     return (
-      <div className={'BustabitScript Edit modal' + (this.props.script ? ' is-active' : '')}>
+      <div className={'BustabitScript-Edit modal' + (this.props.script ? ' is-active' : '')}>
         <div className="modal-background" onClick={this.close}/>
         <div className="modal-card" style={{ width: '90%' }}>
           <form onSubmit={(event) => {
@@ -554,7 +596,7 @@ class Edit extends Component {
           }}>
             <header className="modal-card-head">
               <p className="modal-card-title">Edit Script</p>
-              <button className="delete"
+              <button className="delete is-large"
                 onClick={this.close}>
               </button>
             </header>
@@ -571,26 +613,31 @@ class Edit extends Component {
                 type="hidden"
                 name="id"
                 defaultValue={this.props.script ? this.props.script.id : ''} />
-              <input className="input is-normal"
+              <input className="input is-normal mb-3"
                 required={true}
                 type="text"
                 name="name"
+                readOnly={this.props.script?.isSample}
                 defaultValue={this.props.script ? this.props.script.name : ''} />
               <textarea className="textarea is-normal"
                 required={true}
-                rows="10"
+                rows="20"
                 name="text"
                 defaultValue={this.props.script ? this.props.script.text : ''}>
               </textarea>
             </section>
-            <footer className="modal-card-foot">
-              <button className="button is-success"
-                type="submit">
+            <footer className="modal-card-foot is-justify-content-flex-end">
+              {(this.props.script?.isSample) && (
+                <button className="button is-warning has-text-white"
+                        onClick={this.restore}>
+                <span className="icon is-medium">
+                  <i className="fas fa-undo"/>
+                </span>
+                  <span>Restore</span>
+                </button>
+              )}
+              <button className="button is-success" type="submit">
                 Save Script
-              </button>
-              <button className="button"
-                onClick={this.close}>
-                Cancel
               </button>
             </footer>
           </form>
@@ -651,5 +698,5 @@ class Control extends Component {
   }
 }
 
-
-export default { App, Title, EditButton }
+const BustabitScript = { App, Title, EditButton }
+export default BustabitScript

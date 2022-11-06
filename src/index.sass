@@ -1,0 +1,69 @@
+@charset "utf-8"
+
+
+// Import only what you need from Bulma
+@import '../node_modules/bulma/sass/utilities/initial-variables.sass'
+
+$primary: hsl(31, 78%, 53%)
+$primary-invert: hsl(31, 78%, 53%)
+
+$white: hsl(0, 0%, 4%)
+$white-bis: hsl(0, 0%, 7%)
+$white-ter: hsl(0, 0%, 14%)
+$grey-lightest: hsl(0, 0%, 21%)
+$grey-lighter: hsl(0, 0%, 29%)
+$grey-light: hsl(0, 0%, 48%)
+$grey: hsl(0, 0%, 71%)
+$grey-dark: hsl(0, 0%, 86%)
+$grey-darker: hsl(0, 0%, 93%)
+$black-ter: hsl(0, 0%, 96%)
+$black-bis: hsl(0, 0%, 98%)
+$black: hsl(0, 0%, 100%)
+
+
+$scheme-main: hsl(0, 0%, 21%)
+$scheme-main-bis: hsl(0, 0%, 15%)
+$scheme-main-ter: hsl(0, 0%, 10%)
+$scheme-invert: $white
+$scheme-invert-bis: $white
+$scheme-invert-ter: $white
+
+// Text colors
+$text: $black
+$text-invert: $black
+$text-light: $black
+$text-strong: $black
+
+.bd-navbar
+  background-color: $scheme-main
+
+  &.has-shadow
+    box-shadow: none
+
+@import "../node_modules/bulma/sass/utilities/initial-variables"
+@import "../node_modules/bulma/sass/utilities/functions"
+@import "../node_modules/bulma/sass/utilities/derived-variables"
+@import "../node_modules/bulma/sass/utilities/mixins"
+@import "../node_modules/bulma/sass/utilities/controls"
+@import "../node_modules/bulma/sass/utilities/extends"
+@import '../node_modules/bulma/sass/base/_all.sass'
+@import '../node_modules/bulma/sass/form/_all'
+@import '../node_modules/bulma/sass/elements/table.sass'
+@import '../node_modules/bulma/sass/elements/button.sass'
+@import '../node_modules/bulma/sass/elements/container.sass'
+@import '../node_modules/bulma/sass/elements/title.sass'
+@import '../node_modules/bulma/sass/components/navbar.sass'
+@import '../node_modules/bulma/sass/layout/section.sass'
+
+// Fixes some elements that aren't properly colored
+.table
+  &.is-transparent
+    background-color: transparent
+.box
+  background-color: $light
+  color: $dark
+
+.modal-card-head, .modal-card-foot, .modal-card-body
+  background-color: $light
+  color: $dark
+  border: 0

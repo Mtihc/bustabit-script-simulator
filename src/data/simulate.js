@@ -151,6 +151,9 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
       },
       gameResultFromHash = function (hash) {
         return new Promise(resolve => resolve(hashToBust(hash)));
+      },
+      notify = function (message) {
+        log(message.toString())
       };
     userInfo.balance = startingBalance
     userInfo.balanceATH = startingBalance
@@ -180,7 +183,7 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
       Object.assign(results, { chartData: [] })
     }
 
-    const context = { config, engine, userInfo, log, stop, gameResultFromHash };
+    const context = { config, engine, userInfo, log, stop, gameResultFromHash, notify };
     evalScript.call(context, text)
 
     const games = hashToBusts(gameHash, gameAmount)

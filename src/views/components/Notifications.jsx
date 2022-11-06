@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import NotificationTypes from "../../data/NotificationTypes";
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import FlipMove from 'react-flip-move';
+import './Notifications.sass';
 
 function getClassByType(type) {
   switch(type) {
@@ -17,68 +19,117 @@ function getClassByType(type) {
   }
 }
 
-class NotificationList extends Component {
-  render () {
-    return (
-      <div>
-        <TransitionGroup>
-          {this.props.notifications.items.entrySeq().map(([, item]) => {
-            let props = { ...item, onClose: this.props.notifications.close }
-            if (item.modal) {
-              return (
-                <CSSTransition key={item.id} classNames="item" timeout={500}>
-                  <ModalNotification {...props}/>
-                </CSSTransition>
-              )
-            } else {
-              return (
-                <CSSTransition key={item.id} classNames="item" timeout={500}>
-                  <Notification {...props}/>
-                </CSSTransition>
-              )
-            }
-          })}
-        </TransitionGroup>
-      </div>
-    )
-  }
+
+function classNames(...classNames) {
+  return classNames.filter(className => !!className)
+    .map(className => className.toString())
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 class Notification extends Component {
+  static propTypes = {
+    children: PropTypes.any,
+    header: PropTypes.any,
+    id: (props, propName, componentName) => {
+      if (props[propName] && typeof(props[propName]) !== 'string') {
+        return new Error(`${componentName} ${propName} must be a string`);
+      }
+      if (!props[propName] && props.onClose) {
+        return new Error(`${componentName} ${propName} is required when onClose is set`);
+      }
+    },
+    modal: PropTypes.bool,
+    onClose: PropTypes.func,
+    type: PropTypes.oneOf(Object.values(NotificationTypes)).isRequired,
+  };
+
   render () {
-    return (
-      <article className={`message ${getClassByType(this.props.type)}`} style={{ position: 'absolute', right: '1%', top: '10%'}}>
-        <div className="message-header">
-          <p>{this.props.header}</p>
-          <button className="delete" onClick={() => this.props.onClose(this.props.id)}/>
-        </div>
+    let { children, className = '', header, id, modal, onClose, type, ...rest } = this.props;
+    let notification = (
+      <article
+        {...rest}
+        className={classNames('Notification', 'message', className, getClassByType(type))}>
+        {(header || onClose) && (
+          <div className="message-header">
+            <p>{header}</p>
+            {onClose && (
+              <button className="delete" onClick={() => onClose(id)}/>
+            )}
+          </div>
+        )}
         <div className="message-body">
-          {this.props.content}
+          {children}
         </div>
       </article>
-    )
+    );
+    if (modal) {
+      return (
+        <div className={"modal is-active"}>
+          <div className={"modal-background"} onClick={() => onClose(id)}/>
+          <div className={"modal-content"}>
+            {notification}
+          </div>
+        </div>
+      )
+    } else {
+      return notification;
+    }
   }
 }
 
-class ModalNotification extends Component {
+function NotificationsContainer (props) {
+  let { className, items, container, notificationProps, ...rest } = props;
+  return (
+    <div
+      className={classNames('NotificationsContainer', `NotificationsContainer-${container}`)}>
+      <FlipMove
+        {...rest}
+        className={classNames('FlipMove', className)}
+        enterAnimation="none"
+        leaveAnimation="none">
+        {items.filter(item => item.container === container).entrySeq().map(([id, item]) => {
+          let { container, ...rest } = item;
+          return (
+            <Notification key={`Notification-${id}`} {...notificationProps} {...rest}>
+              {item.children}
+            </Notification>
+          )
+        })}
+      </FlipMove>
+    </div>
+  );
+}
+
+class Notifications extends Component {
+  static propTypes = {
+    notifications: PropTypes.shape({
+      items: PropTypes.object.isRequired,
+    }).isRequired,
+  };
+
   render () {
+    let { notifications, className = '', ...rest } = this.props;
     return (
-      <div className={"modal is-active"}>
-        <div className={"modal-background"}/>
-        <div className={"modal-content"}>
-          <article className={`message ${getClassByType(this.props.type)}`}>
-            <div className="message-header">
-              <p>{this.props.header}</p>
-              <button className="delete" onClick={() => this.props.onClose(this.props.id)}/>
-            </div>
-            <div className="message-body">
-              {this.props.content}
-            </div>
-          </article>
-        </div>
+      <div
+        {...rest}
+        className={`Notifications ${className}`.trim()}>
+        <NotificationsContainer
+          items={notifications.items}
+          container={'top-left'} />
+        <NotificationsContainer
+          items={notifications.items}
+          container={'top-right'} />
+        <NotificationsContainer
+          items={notifications.items}
+          container={'bottom-left'} />
+        <NotificationsContainer
+          items={notifications.items}
+          container={'bottom-right'} />
       </div>
     )
   }
 }
 
-export { NotificationList }
+export default Notifications;

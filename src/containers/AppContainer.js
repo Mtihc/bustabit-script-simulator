@@ -37,12 +37,24 @@ function getState() {
         onNew: ScriptActions.new,
         onEdit: ScriptActions.edit,
         onCancel: ScriptActions.cancel,
+        onRestore: (id) => {
+          ScriptActions.restoreSample(id)
+          setTimeout(() => {
+            ScriptActions.cancel()
+            ScriptActions.edit(id)
+          }, 100)
+
+        },
         onSave: ScriptActions.save,
         onDelete: ScriptActions.delete,
         onDeleted: ScriptActions.deleted,
         onSelect: ScriptActions.select,
         onDeselect: ScriptActions.deselect,
         onRun: ScriptActions.run,
+        exportScripts: ScriptActions.exportScripts,
+        exportScript: ScriptActions.exportScript,
+        restoreSamples: ScriptActions.restoreSamples,
+        copyScript: ScriptActions.copyScript,
       }
     },
     notifications: {
