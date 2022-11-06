@@ -4,6 +4,7 @@ import LineChart from './LineChart'
 import { OptionsMenu, OptionsMenuItem } from './OptionsMenu';
 import PropTypes from 'prop-types'
 import './BustabitScript.sass'
+import {version} from "../../../package.json";
 
 class App extends Component {
 
@@ -75,6 +76,8 @@ class Title extends Component {
           <span className="script-simulator-title">
             Script Simulator
           </span>
+          <span className="ml-1"></span>
+          <span className="script-simulator-version">v{version}</span>
         </p>
       </div>
     )
