@@ -94,6 +94,23 @@ const ScriptUtils = {
     return scripts
   },
 
+  restoreSample(id) {
+    let scripts = getLocalStorageScripts() || {}
+    if (!scripts[id]?.isSample) {
+      throw new Error(`Can't restore script ${id} (${scripts[id]?.name || 'unknown'}), `
+                      + 'it\'s not a sample script.')
+    }
+    let sample = ScriptConstants.SCRIPT_SAMPLES.find(script => script.name === scripts[id].name);
+    if (!sample) {
+      throw new Error(`Can't restore script ${id} (${scripts[id]?.name || 'unknown'}), `
+                      + 'the name does not match any known sample scripts.')
+    }
+    scripts[id].text = sample.text
+    onBeforeSave(scripts[id])
+    setLocalStorageScripts(scripts)
+    return scripts
+  },
+
   /**
    * Insert or re-insert sample scripts into localStorage.
    * @returns {Object.<string, Object>} all scripts
@@ -106,9 +123,10 @@ const ScriptUtils = {
       }
     })
     ScriptConstants.SCRIPT_SAMPLES.forEach((script) => {
-      onBeforeSave(script)
+      script = { ...script }
       script.isSample = true
       script.id = getUniqueID(Object.keys(scripts))
+      onBeforeSave(script)
       scripts[script.id] = script
     })
     setLocalStorageScripts(scripts)

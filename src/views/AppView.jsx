@@ -38,9 +38,9 @@ function AppView(props) {
           <div className="navbar-end">
             <div className="navbar-item">
               <div className="buttons">
-                <DisclaimerButton className="is-small" />
-                <DonateButton className="is-small" />
-                <ExportAllScriptsButton className="is-small" />
+                <DisclaimerButton className="is-small is-light" />
+                <DonateButton className="is-small is-light" />
+                <ExportAllScriptsButton className="is-small is-light" />
               </div>
             </div>
           </div>

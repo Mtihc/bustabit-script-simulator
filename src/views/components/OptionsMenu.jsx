@@ -41,7 +41,6 @@ class OptionsMenu extends Component {
         {...rest}
         className={this.classNames('OptionsMenu is-relative', className, !children && 'is-hidden')}>
         <CircularIconButton
-          className={'is-white'}
           iconClassName={'fas fa-ellipsis-v'}
           onClick={this.handleButtonClick}/>
         {/* Submenu */}
@@ -81,7 +80,7 @@ function OptionsMenuItem (props) {
   return (
     <div {...rest}
          className={`p-0 ${className}`.trim()}>
-      <button className="button is-white is-fullwidth is-justify-content-left"
+      <button className="button is-fullwidth is-justify-content-left"
               onClick={onClick}>
         <span className={"icon"}><i className={iconClassName}/></span>
         <span>{children}</span>

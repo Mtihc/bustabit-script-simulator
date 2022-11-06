@@ -13,6 +13,12 @@ const Actions = {
   restoreSamples () {
     let scripts = ScriptUtils.restoreSamples()
     AppDispatcher.dispatch({ type: ScriptActionTypes.LOADED, scripts });
+    NotificationActions.success('Sample scripts restored.', { autoCloseTimeout: 2000, container: 'bottom-left' })
+  },
+
+  restoreSample (id) {
+    let scripts = ScriptUtils.restoreSample(id)
+    AppDispatcher.dispatch({ type: ScriptActionTypes.LOADED, scripts });
   },
 
   delete (id) {

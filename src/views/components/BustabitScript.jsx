@@ -41,6 +41,7 @@ class App extends Component {
             script={scripts.editing}
             error={scripts.updateError}
             onCancel={scripts.onCancel}
+            onRestore={scripts.onRestore}
             onSave={scripts.onSave} />
         )}
         {viewState === 'new' && (
@@ -87,7 +88,7 @@ class List extends Component {
     return (
       <div {...rest} className={`BustabitScript-List is-inline-block ${className}`.trim()}>
         <div className={"box has-text-left"}>
-          <table className="table is-hoverable">
+          <table className="table is-transparent">
             <thead>
               <tr>
                 <th colSpan="4">
@@ -98,9 +99,14 @@ class List extends Component {
                     <OptionsMenu
                       className={"is-inline-block"}>
                       <OptionsMenuItem
-                        iconClassName={"fas fa-file-export"}
-                        onClick={scripts.exportScripts}>
+                          iconClassName={"fas fa-file-export"}
+                          onClick={scripts.exportScripts}>
                         Export All Scripts
+                      </OptionsMenuItem>
+                      <OptionsMenuItem
+                          iconClassName={"fas fa-undo"}
+                          onClick={scripts.restoreSamples}>
+                        Restore Sample Scripts
                       </OptionsMenuItem>
                     </OptionsMenu>
                     <NewButton
@@ -339,7 +345,7 @@ class Show extends Component {
             {!scripts.results.error && (
               <div className="columns">
                 <div className="column is-one-fifth">
-                  <table className={"table is-hoverable box is-inline-block"}>
+                  <table className={"table box is-inline-block"}>
                     <tbody>
                       <tr>
                         <th>Games Played</th>
@@ -445,7 +451,7 @@ class Delete extends Component {
             </p>
             <div className="buttons is-pulled-right">
               <button
-                className="button"
+                className="button is-danger"
                 onClick={() => {
                   let id = this.props.script.id;
                   this.props.onDeleted(id, true)
@@ -496,7 +502,7 @@ class DeleteButton extends Component {
     const { className = '', ...rest } = this.props;
     return (
       <div className={"BustabitScript DeleteButton control"}>
-        <button {...rest} className={`button ${className}`}>
+        <button {...rest} className={`button is-light ${className}`}>
           <span className="icon is-normal" width="2em" height="2em">
             <i className="fas fa-trash-alt"/>
           </span>
@@ -559,11 +565,17 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.close = this.close.bind(this)
+    this.restore = this.restore.bind(this)
   }
 
   close(event) {
     if (event) { event.preventDefault(); }
     this.props.onCancel()
+  }
+
+  restore(event) {
+    if (event) { event.preventDefault(); }
+    this.props.onRestore(this.props.script.id)
   }
 
   render() {
@@ -581,7 +593,7 @@ class Edit extends Component {
           }}>
             <header className="modal-card-head">
               <p className="modal-card-title">Edit Script</p>
-              <button className="delete"
+              <button className="delete is-large"
                 onClick={this.close}>
               </button>
             </header>
@@ -598,26 +610,31 @@ class Edit extends Component {
                 type="hidden"
                 name="id"
                 defaultValue={this.props.script ? this.props.script.id : ''} />
-              <input className="input is-normal"
+              <input className="input is-normal mb-3"
                 required={true}
                 type="text"
                 name="name"
+                readOnly={this.props.script?.isSample}
                 defaultValue={this.props.script ? this.props.script.name : ''} />
               <textarea className="textarea is-normal"
                 required={true}
-                rows="10"
+                rows="20"
                 name="text"
                 defaultValue={this.props.script ? this.props.script.text : ''}>
               </textarea>
             </section>
-            <footer className="modal-card-foot">
-              <button className="button is-success"
-                type="submit">
+            <footer className="modal-card-foot is-justify-content-flex-end">
+              {(this.props.script?.isSample) && (
+                <button className="button is-warning has-text-white"
+                        onClick={this.restore}>
+                <span className="icon is-medium">
+                  <i className="fas fa-undo"/>
+                </span>
+                  <span>Restore</span>
+                </button>
+              )}
+              <button className="button is-success" type="submit">
                 Save Script
-              </button>
-              <button className="button"
-                onClick={this.close}>
-                Cancel
               </button>
             </footer>
           </form>
