@@ -4,8 +4,8 @@
   "homepage": "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
-    "d3": "^4.13.0",
+    "crypto-js": "^4.2.0",
+    "d3": "^7.8.5",
     "file-saver": "^2.0.2",
     "flux": "^4.0.2",
     "immutable": "^4.0.0",
@@ -15,7 +15,7 @@
     "react-dom": "^17.0.2",
     "react-flip-move": "^3.0.4",
     "react-ga": "^3.3.0",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.1",
     "react-transition-group": "^4.4.2"
   },
   "scripts": {
@@ -37,7 +37,7 @@
   "devDependencies": {
     "bulma": "^0.9.1",
     "gh-pages": "^2.0.1",
-    "node-sass": "^6.0.1",
-    "terser": "^3.14.1"
+    "node-sass": "^9.0.0",
+    "terser": "^5.27.0"
   }
 }

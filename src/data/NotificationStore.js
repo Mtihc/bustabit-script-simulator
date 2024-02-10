@@ -27,4 +27,5 @@ class NotificationStore extends ReduceStore {
   }
 }
 
-export default new NotificationStore();
+let notificationsStore = new NotificationStore();
+export default notificationsStore

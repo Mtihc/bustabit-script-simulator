@@ -88,4 +88,5 @@ class ScriptListStore extends ReduceStore {
   }
 }
 
-export default new ScriptListStore();
+let scriptListStore = new ScriptListStore();
+export default scriptListStore

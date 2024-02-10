@@ -63,6 +63,7 @@ class LineChart extends Component {
 
   updateLineChart () {
     d3LineChart({
+      d3: d3,
       container: this.container,
 
       viewBoxWidth: this.props.viewBoxWidth,
@@ -136,6 +137,7 @@ class Tooltip extends Component {
 }
 
 function d3LineChart ({
+  d3,
   container,
   viewBoxWidth,
   viewBoxHeight,
@@ -328,9 +330,9 @@ function d3LineChart ({
 
     let bisect = d3.bisector(function (d, dx) { return dx - xAccessor(d) }).left
 
-    function mousemove () {
+    function mousemove (event) {
 
-      const mousex = d3.mouse(this)[0],
+      const mousex = d3.pointer(event, this)[0],
             dx = xScale.invert(mousex),
             i = bisect(data, dx),
             d0 = data[i - 1],
@@ -346,14 +348,14 @@ function d3LineChart ({
       g_lines.selectAll('.data-point')
          .classed('hover', (d) => xAccessor(d) === xAccessor(selected))
       moveCrosshair(selected)
-      moveTooltip(d)
+      moveTooltip(event, d)
     }
   }
 
-  function moveTooltip (d) {
+  function moveTooltip (event, d) {
     if (tooltipElement && svgElement && container && viewBoxWidth && viewBoxHeight) {
-      let svgMouse = d3.mouse(svgElement.node()),
-          containerMouse = d3.mouse(container.node());
+      let svgMouse = d3.pointer(event, svgElement.node()),
+          containerMouse = d3.pointer(event, container.node());
 
       let tooltipX, tooltipY;
       const tooltipOffset = {
@@ -415,9 +417,9 @@ function d3LineChart ({
   }
 
 
-  function brushed() {
-    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-    var s = d3.event.selection || xScale2.range();
+  function brushed(event) {
+    if (event.sourceEvent && event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+    var s = event.selection || xScale2.range();
     xScale.domain(s.map(xScale2.invert, xScale2));
 
     g_lines.select(".data-line")
@@ -431,12 +433,12 @@ function d3LineChart ({
     g_axes.select(".axis-x").call(xAxis);
     svgElement.select(".zoom").call(zoom.transform, d3.zoomIdentity
       .scale(width / (s[1] - s[0]))
-      .translate(-s[0], 0));
+      .translate(-s[0], 0), event);
   }
 
-  function zoomed() {
-    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-    var t = d3.event.transform;
+  function zoomed(event) {
+    if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+    var t = event.transform;
     xScale.domain(t.rescaleX(xScale2).domain());
 
     g_lines.select(".data-line")
@@ -448,7 +450,7 @@ function d3LineChart ({
     if (selected) moveCrosshair(selected);
 
     g_axes.select(".axis-x").call(xAxis);
-    context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t));
+    context.select(".brush").call(brush.move, xScale.range().map(t.invertX, t), event);
   }
 
 }

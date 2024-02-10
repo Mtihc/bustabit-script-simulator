@@ -4,7 +4,8 @@ import LineChart from './LineChart'
 import { OptionsMenu, OptionsMenuItem } from './OptionsMenu';
 import PropTypes from 'prop-types'
 import './BustabitScript.sass'
-import {version} from "../../../package.json";
+import packageInfo from "../../../package.json";
+const version = packageInfo.version;
 
 class App extends Component {
 
