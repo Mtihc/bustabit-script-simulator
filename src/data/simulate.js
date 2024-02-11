@@ -117,29 +117,48 @@ function evalScript() {
   eval(arguments[0])
 }
 
-function simulate({ text, config, startingBalance, gameHash, gameAmount, drawChart, quickTest }) {
+function backupConsoleLog () {
+  return {
+    log: console.log,
+    warn: console.warn,
+    info: console.info,
+    error: console.error,
+    debug: console.debug
+  }
+}
+
+function restoreConsoleLog(backup) {
+  if (backup) {
+    console.log = backup.log;
+    console.warn = backup.warn;
+    console.info = backup.info;
+    console.error = backup.error;
+    console.debug = backup.debug;
+  }
+}
+
+function toggleConsoleLog(enableLog) {
+  let backup = backupConsoleLog();
+  if (!enableLog) {
+    function noLog() { }
+    console.log = noLog;
+    console.warn = noLog;
+    console.info = noLog;
+    console.error = noLog;
+    console.debug = noLog;
+  }
+  return backup;
+}
+
+function simulate({ text, config, startingBalance, gameHash, gameAmount, drawChart, enableLog }) {
   return new Promise((resolve, reject) => {
     let logMessages = '',
       shouldStop = false,
       shouldStopReason = undefined;
-    const logFuncs = {
-      log: console.log,
-      warn: console.warn,
-      info: console.info,
-      error: console.error,
-      debug: console.debug
-    };
-    function noLog() { return; }
-    if (!quickTest) {
-      console.log = noLog;
-      console.warn = noLog;
-      console.info = noLog;
-      console.error = noLog;
-      console.debug = noLog;
-    }
+    const consoleLogBackup = toggleConsoleLog(enableLog);
     const engine = new SimulatedBustabitEngine(),
       userInfo = engine._userInfo,
-      log = (!quickTest ? () => { } : function () {
+      log = (!enableLog ? () => {} : function () {
         let msg = Array.prototype.slice.call(arguments);
         logMessages += msg.join(' ') + '\n'
         msg.unshift('LOG:');
@@ -202,13 +221,7 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
 
 
     function endSimulation() {
-      if (!!quickTest) {
-        console.log = logFuncs.log;
-        console.warn = logFuncs.warn;
-        console.info = logFuncs.info;
-        console.error = logFuncs.error;
-        console.debug = logFuncs.debug;
-      }
+      restoreConsoleLog(consoleLogBackup);
       if (shouldStop && shouldStopReason) {
         log(shouldStopReason)
       }

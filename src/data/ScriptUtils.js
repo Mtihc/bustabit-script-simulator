@@ -166,9 +166,9 @@ const ScriptUtils = {
    * @param {number} options.gameAmount The amount of games to simulate
    * @param {number} options.startingBalance The amount of Bits to start with.
    * @param {boolean} options.drawChart Whether to collect extra data that is required for a line chart.
-   * @param {boolean} options.quickTest Disables the script logging in order to speed up large tests.
+   * @param {boolean} options.enableLog Disables the script logging in order to speed up large tests.
    */
-  run({ script, gameHash, gameAmount, startingBalance, drawChart, quickTest }) {
+  run({ script, gameHash, gameAmount, startingBalance, drawChart, enableLog }) {
     let settings = { ...arguments[0] }
     delete settings.script
     settings.config = script.config
