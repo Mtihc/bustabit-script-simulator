@@ -98,7 +98,7 @@ class Tooltip extends Component {
     return (
       <div  {...wrapper}>
         {data && (
-          <table className="table is-transparent">
+          <table className="table">
             <tbody>
               <tr>
                 <th>Game ID</th>
