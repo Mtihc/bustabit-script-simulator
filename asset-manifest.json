@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/bustabit-script-simulator/static/css/main.ddceeb2a.css",
-    "main.js": "/bustabit-script-simulator/static/js/main.b3011ead.js",
+    "main.js": "/bustabit-script-simulator/static/js/main.3911abfa.js",
     "index.html": "/bustabit-script-simulator/index.html",
     "main.ddceeb2a.css.map": "/bustabit-script-simulator/static/css/main.ddceeb2a.css.map",
-    "main.b3011ead.js.map": "/bustabit-script-simulator/static/js/main.b3011ead.js.map"
+    "main.3911abfa.js.map": "/bustabit-script-simulator/static/js/main.3911abfa.js.map"
   },
   "entrypoints": [
     "static/css/main.ddceeb2a.css",
-    "static/js/main.b3011ead.js"
+    "static/js/main.3911abfa.js"
   ]
 }

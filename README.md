@@ -47,6 +47,16 @@ You can simulate your script on thousands of bustabit games, in a few seconds.
     - `BET_PLACED`
     - `CASHED_OUT`
 
+- Exposes an extra variable `sim` to the script. This object contains some useful values. 
+  But beware that this only exists in this simulator, for your simulation pleasure. 
+  The `sim` variable does not actually exist on bustabit.
+  - `sim.enableChart`
+  - `sim.enableLog`
+  - `sim.gameAmount`
+  - `sim.gameHash`
+  - `sim.startingBalance`
+
+
 ## Frequently Asked Questions
 
 ##### How are the game results generated?
