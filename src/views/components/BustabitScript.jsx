@@ -183,7 +183,7 @@ class Show extends Component {
       startingBalance: 1000000,
       gameHash: '7edbd07968e771f205a4e2b67701c2f6993437db0c557160ba79ee70ea6d10c6',
       gameAmount: 1000,
-      drawChart: true,
+      enableChart: true,
       enableLog: true,
     }
   }
@@ -288,7 +288,7 @@ class Show extends Component {
                         gameHash: this.state.gameHash,
                         gameAmount: this.state.gameAmount,
                         startingBalance: this.state.startingBalance,
-                        drawChart: this.state.drawChart,
+                        enableChart: this.state.enableChart,
                         enableLog: this.state.enableLog,
                       };
                       scripts.onRun(args)
@@ -301,8 +301,8 @@ class Show extends Component {
                     <label className="checkbox">
                       <input className="checkbox"
                         type="checkbox"
-                        name="drawChart"
-                        checked={this.state.drawChart}
+                        name="enableChart"
+                        checked={this.state.enableChart}
                         onChange={(event) => {
                           this.setState({ [event.target.name]: Boolean(event.target.checked) })
                         }} />

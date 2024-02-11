@@ -165,10 +165,10 @@ const ScriptUtils = {
    * @param {string} options.gameHash Some previous bustabit game's hash.
    * @param {number} options.gameAmount The amount of games to simulate
    * @param {number} options.startingBalance The amount of Bits to start with.
-   * @param {boolean} options.drawChart Whether to collect extra data that is required for a line chart.
+   * @param {boolean} options.enableChart Whether to collect extra data that is required for a line chart.
    * @param {boolean} options.enableLog Disables the script logging in order to speed up large tests.
    */
-  run({ script, gameHash, gameAmount, startingBalance, drawChart, enableLog }) {
+  run({ script, gameHash, gameAmount, startingBalance, enableChart, enableLog }) {
     let settings = { ...arguments[0] }
     delete settings.script
     settings.config = script.config

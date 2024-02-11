@@ -112,7 +112,7 @@ class SimulatedBustabitEngine extends EventEmitter {
 }
 
 function evalScript() {
-  const { config, engine, userInfo, log, stop, gameResultFromHash } = this // eslint-disable-line no-unused-vars
+  const { config, engine, userInfo, log, stop, gameResultFromHash, sim } = this // eslint-disable-line no-unused-vars
   // eslint-disable-next-line
   eval(arguments[0])
 }
@@ -152,7 +152,7 @@ function toggleConsoleLog(enableLog) {
 
 class BetRejected extends Error {}
 
-function simulate({ text, config, startingBalance, gameHash, gameAmount, drawChart, enableLog }) {
+function simulate({ text, config, startingBalance, gameHash, gameAmount, enableChart, enableLog }) {
   return new Promise((resolve, reject) => {
     let logMessages = '',
       shouldStop = false,
@@ -200,11 +200,14 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
       history: engine.history.data,
       log: logMessages
     };
-    if (drawChart) {
+    if (enableChart) {
       Object.assign(results, { chartData: [] })
     }
 
-    const context = { config, engine, userInfo, log, stop, gameResultFromHash, notify };
+    // some extra variables for your simulation pleasure
+    const sim = { startingBalance, gameHash, gameAmount, enableChart, enableLog };
+
+    const context = { config, engine, userInfo, log, stop, gameResultFromHash, notify, sim };
     evalScript.call(context, text)
 
     const games = hashToBusts(gameHash, gameAmount);
@@ -363,7 +366,7 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
       // add game to history, just like bustabit
       engine.history.data.unshift(game)
       // keep track of some extra data for the chart
-      if (drawChart) {
+      if (enableChart) {
         results.chartData.unshift(Object.assign({
           payout: (bet ? bet.payout : 0),
           balance: userInfo.balance,
