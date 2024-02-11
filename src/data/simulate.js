@@ -150,6 +150,8 @@ function toggleConsoleLog(enableLog) {
   return backup;
 }
 
+class BetRejected extends Error {}
+
 function simulate({ text, config, startingBalance, gameHash, gameAmount, drawChart, enableLog }) {
   return new Promise((resolve, reject) => {
     let logMessages = '',
@@ -205,23 +207,24 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
     const context = { config, engine, userInfo, log, stop, gameResultFromHash, notify };
     evalScript.call(context, text)
 
-    const games = hashToBusts(gameHash, gameAmount)
-    nextGame(null, -1, games)
-
-    function nextGame(id) {
-      id++
-      setImmediate(() => {
-        if (id < games.length && !shouldStop) {
-          doGame(id);
+    const games = hashToBusts(gameHash, gameAmount);
+    for (let id = 0; id < games.length && !shouldStop; id++) {
+      try {
+        doGame(id);
+      } catch (e) {
+        if (e instanceof BetRejected) {
+          break;
         } else {
-          endSimulation();
+          throw e;
         }
-      });
+      }
     }
+    endSimulation();
 
 
     function endSimulation() {
       restoreConsoleLog(consoleLogBackup);
+
       if (shouldStop && shouldStopReason) {
         log(shouldStopReason)
       }
@@ -272,20 +275,20 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
         // reject with specific strings, just like bustabit
         if (isNaN(bet.wager) || bet.wager < 100 || (bet.wager % 100 !== 0)) {
           bet.reject('INVALID_BET')
-          return endSimulation()
+          throw new BetRejected('INVALID_BET');
         }
         if (isNaN(bet.payout)) {
           bet.reject('cannot parse JSON')
-          return endSimulation()
+          throw new BetRejected('cannot parse JSON');
         }
         if (userInfo.balance - bet.wager < 0) {
           bet.reject('BET_TOO_BIG')
           userInfo.sumWagers += bet.wager;
-          return endSimulation()
+          throw new BetRejected('BET_TOO_BIG');
         }
         if (bet.payout <= 1) {
           bet.reject('payout is too low')
-          return endSimulation()
+          throw new BetRejected('payout is too low');
         }
 
         // decrease balance, just like bustabit
@@ -373,8 +376,6 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, drawCha
       engine.gameState = 'GAME_ENDED'
       // emit event, just like bustabit
       engine.emit('GAME_ENDED', { hash: game.hash, bust: game.bust })
-
-      nextGame(id)
     }
   });
 }
