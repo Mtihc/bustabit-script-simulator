@@ -175,6 +175,15 @@ function msToTime(duration) {
   return (days > 0 ? days + "d " : "") + hours + "h " + minutes + "m " + seconds + "s";
 }
 
+// Generate a random game hash: 32 random bytes as 64 hex chars, matching the
+// format of a real bustabit game hash (a sha256 output). Uses the crypto API
+// so the bytes are cryptographically random.
+function randomGameHash() {
+  const bytes = new Uint8Array(32);
+  (window.crypto || window.msCrypto).getRandomValues(bytes);
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+
 class Show extends Component {
   constructor(props) {
     super(props);
@@ -250,15 +259,31 @@ class Show extends Component {
                     this.setState(changes)
                   }} />
               </Control>
-              <Control label="Hash"
-                icon="fas fa-key">
-                <input className="input is-normal"
-                  type="text" required={true}
-                  name="gameHash"
-                  value={this.state.gameHash}
-                  onChange={(event) => {
-                    this.setState({ [event.target.name]: String(event.target.value) })
-                  }} />
+              <Control label="Hash">
+                <div className="field has-addons mb-0">
+                  <div className="control has-icons-left is-expanded">
+                    <input className="input is-normal"
+                      type="text" required={true}
+                      name="gameHash"
+                      value={this.state.gameHash}
+                      onChange={(event) => {
+                        this.setState({ [event.target.name]: String(event.target.value) })
+                      }} />
+                    <span className="icon is-small is-left">
+                      <i className="fas fa-key" />
+                    </span>
+                  </div>
+                  <div className="control">
+                    <button type="button"
+                      className="button is-normal"
+                      title="Generate a random game hash"
+                      onClick={() => this.setState({ gameHash: randomGameHash() })}>
+                      <span className="icon">
+                        <i className="fas fa-dice" />
+                      </span>
+                    </button>
+                  </div>
+                </div>
               </Control>
 
               <Control label="Games"
