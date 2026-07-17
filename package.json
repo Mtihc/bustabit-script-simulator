@@ -1,6 +1,6 @@
 {
   "name": "bustabit-script-simulator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
@@ -36,8 +36,8 @@
   ],
   "devDependencies": {
     "bulma": "^0.9.1",
-    "gh-pages": "^2.0.1",
-    "node-sass": "^9.0.0",
+    "gh-pages": "^2.2.0",
+    "sass": "^1.77.0",
     "terser": "^5.27.0"
   }
 }

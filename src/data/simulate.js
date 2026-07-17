@@ -3,7 +3,7 @@ import CryptoJS from "crypto-js"
 
 function hashToBust(seed) {
   const nBits = 52;
-  const hmac = CryptoJS.HmacSHA256(CryptoJS.enc.Hex.parse(seed), '0000000000000000004d6ec16dafe9d8370958664c1dc422f452892264c59526');
+  const hmac = CryptoJS.HmacSHA256(CryptoJS.enc.Hex.parse(seed), '00000000000000000001e08b7fd44f95e3e950ac65650a8031a6d5e1750e34be');
   seed = hmac.toString(CryptoJS.enc.Hex);
   seed = seed.slice(0, nBits / 4);
   const r = parseInt(seed, 16);
@@ -21,7 +21,7 @@ function hashToBusts(seed, amount) {
   const result = []
   result.unshift({ hash: prevHash, bust: hashToBust(String(prevHash)) })
   for (let index = 0; index < amount; index++) {
-    let hash = String(CryptoJS.SHA256(String(prevHash)))
+    let hash = String(CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prevHash)))
     let bust = hashToBust(hash)
     result.unshift({ hash, bust })
     prevHash = hash;

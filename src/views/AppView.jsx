@@ -25,6 +25,14 @@ function ExportAllScriptsButton(props) {
 
 ExportAllScriptsButton.propTypes = {className: PropTypes.string};
 
+function AlgorithmRibbon() {
+  return (
+    <div className="AlgorithmRibbon has-text-centered">
+      <p>Matches bustabit's September 2025 algorithm (4th seeding event)</p>
+    </div>
+  )
+}
+
 function AppView(props) {
   return (
     <div className="AppView">
@@ -46,6 +54,7 @@ function AppView(props) {
           </div>
         </div>
       </nav>
+      <AlgorithmRibbon />
       <main>
         <Notifications
           notifications={props.notifications}/>
