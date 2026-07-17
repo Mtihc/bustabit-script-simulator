@@ -1,8 +1,8 @@
-import CryptoJS from "crypto-js";
+import { randomBytes, bytesToHex } from '@noble/hashes/utils.js'
 
 function getUniqueID(existingIds) {
   for (let attempt = 0; attempt < 3; attempt++) {
-    let id = String(CryptoJS.lib.WordArray.random(16))
+    let id = bytesToHex(randomBytes(16))
     if (!existingIds || existingIds.indexOf(id) === -1) {
       return id
     }

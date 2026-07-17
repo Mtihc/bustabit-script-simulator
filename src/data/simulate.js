@@ -1,11 +1,14 @@
 import EventEmitter from 'events'
-import CryptoJS from "crypto-js"
+import { sha256 } from '@noble/hashes/sha2.js'
+import { hmac } from '@noble/hashes/hmac.js'
+import { bytesToHex, hexToBytes, utf8ToBytes } from '@noble/hashes/utils.js'
+
+const GAME_SALT = '00000000000000000001e08b7fd44f95e3e950ac65650a8031a6d5e1750e34be'
 
 function hashToBust(seed) {
   const nBits = 52;
-  const hmac = CryptoJS.HmacSHA256(CryptoJS.enc.Hex.parse(seed), '00000000000000000001e08b7fd44f95e3e950ac65650a8031a6d5e1750e34be');
-  seed = hmac.toString(CryptoJS.enc.Hex);
-  seed = seed.slice(0, nBits / 4);
+  const hash = bytesToHex(hmac(sha256, utf8ToBytes(GAME_SALT), hexToBytes(seed)));
+  seed = hash.slice(0, nBits / 4);
   const r = parseInt(seed, 16);
   let X = r / Math.pow(2, nBits);
   X = 99 / (1 - X);
@@ -21,7 +24,7 @@ function hashToBusts(seed, amount) {
   const result = []
   result.unshift({ hash: prevHash, bust: hashToBust(String(prevHash)) })
   for (let index = 0; index < amount; index++) {
-    let hash = String(CryptoJS.SHA256(CryptoJS.enc.Hex.parse(prevHash)))
+    let hash = bytesToHex(sha256(hexToBytes(prevHash)))
     let bust = hashToBust(hash)
     result.unshift({ hash, bust })
     prevHash = hash;
