@@ -21,12 +21,16 @@ function hashToBusts(seed, amount) {
     throw new TypeError('amount must be a number larger than zero.')
   }
   let prevHash = seed
-  const result = []
-  result.unshift({ hash: prevHash, bust: hashToBust(String(prevHash)) })
+  // Fill the array by index instead of unshift(): unshift is O(n) per call,
+  // which makes building the game list O(n^2) and freezes the browser for
+  // large runs. The resulting order is identical (oldest game first, the
+  // provided seed's game last).
+  const result = new Array(amount + 1)
+  result[amount] = { hash: prevHash, bust: hashToBust(String(prevHash)) }
   for (let index = 0; index < amount; index++) {
     let hash = bytesToHex(sha256(hexToBytes(prevHash)))
     let bust = hashToBust(hash)
-    result.unshift({ hash, bust })
+    result[amount - 1 - index] = { hash, bust }
     prevHash = hash;
   }
   return result
@@ -34,7 +38,15 @@ function hashToBusts(seed, amount) {
 
 class SimulatedBustabitHistory {
   constructor() {
+    // Games are stored oldest-first internally so adding a new game is an
+    // O(1) push instead of an O(n) unshift (unshift made large simulations
+    // O(n^2) and froze the browser). The public API below still presents
+    // games newest-first, like bustabit's engine.history.
     this.data = []
+  }
+
+  add(game) {
+    this.data.push(game)
   }
 
   get size() {
@@ -54,15 +66,18 @@ class SimulatedBustabitHistory {
   }
 
   first() {
-    return this.size > 0 ? this.data[0] : null;
-  }
-
-  last() {
+    // the most recent game
     return this.size > 0 ? this.data[this.size - 1] : null;
   }
 
+  last() {
+    // the oldest game
+    return this.size > 0 ? this.data[0] : null;
+  }
+
   toArray() {
-    return this.data;
+    // newest-first, like bustabit
+    return this.data.slice().reverse();
   }
 }
 
@@ -231,6 +246,13 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, enableC
     function endSimulation() {
       restoreConsoleLog(consoleLogBackup);
 
+      // chartData was built oldest-first via push() (O(1)); flip it once to the
+      // newest-first order the chart expects. A single O(n) reverse replaces the
+      // former O(n^2) unshift-per-game.
+      if (enableChart) {
+        results.chartData.reverse()
+      }
+
       if (shouldStop && shouldStopReason) {
         log(shouldStopReason)
       }
@@ -255,7 +277,7 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, enableC
       results.balanceATL = userInfo.balanceATL
       results.profitPerHour = results.profit / (results.duration / (1000 * 60 * 60))
       results.message = `${userInfo.bets} Games played. ${results.profit > 0 ? 'Won' : 'Lost'} ${(results.profit / 100)} bits. ${results.message || ''}`
-      results.history = engine.history.results
+      results.history = engine.history.toArray()
       results.log = logMessages
       resolve(results);
     }
@@ -367,10 +389,10 @@ function simulate({ text, config, startingBalance, gameHash, gameAmount, enableC
       }
 
       // add game to history, just like bustabit
-      engine.history.data.unshift(game)
+      engine.history.add(game)
       // keep track of some extra data for the chart
       if (enableChart) {
-        results.chartData.unshift(Object.assign({
+        results.chartData.push(Object.assign({
           payout: (bet ? bet.payout : 0),
           balance: userInfo.balance,
           profit: (game.cashedAt > 0 ? (game.cashedAt - 1) * game.wager : -game.wager)

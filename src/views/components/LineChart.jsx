@@ -5,6 +5,10 @@ import * as d3 from 'd3';
 
 import './LineChart.sass';
 
+// Above this many games we skip drawing an individual circle per point to keep
+// the chart from freezing the browser (the line itself still renders).
+const MAX_DATA_POINTS = 5000;
+
 class LineChart extends Component {
   constructor (props) {
     super(props)
@@ -284,13 +288,18 @@ function d3LineChart ({
            .attr("class", "data-line")
            .attr("d", line);
 
-    g_lines.selectAll(".data-point")
-           .data(data)
-           .enter().append("circle")
-           .attr("class", function (d) { return "data-point " + (d.profit === 0 ? 'is-warning' : (d.profit > 0 ? 'is-success' : 'is-danger')) })
-           .attr("cx", lineX)
-           .attr("cy", lineY)
-           .attr("r", 0)
+    // One <circle> per game freezes the browser for large simulations (100k+
+    // DOM nodes, re-positioned on every brush/zoom). Above this threshold we
+    // draw only the line; the tooltip/crosshair still work via the bisector.
+    if (data.length <= MAX_DATA_POINTS) {
+      g_lines.selectAll(".data-point")
+             .data(data)
+             .enter().append("circle")
+             .attr("class", function (d) { return "data-point " + (d.profit === 0 ? 'is-warning' : (d.profit > 0 ? 'is-success' : 'is-danger')) })
+             .attr("cx", lineX)
+             .attr("cy", lineY)
+             .attr("r", 0)
+    }
 
     context.append("path")
            .datum(data)

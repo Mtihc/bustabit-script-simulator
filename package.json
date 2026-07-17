@@ -1,6 +1,6 @@
 {
   "name": "bustabit-script-simulator",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "homepage": "http://Mtihc.github.io/bustabit-script-simulator",
   "private": true,
   "dependencies": {
